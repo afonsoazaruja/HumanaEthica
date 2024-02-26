@@ -1,33 +1,49 @@
 package pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.domain;
 
+import jakarta.persistence.*;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.dto.AssessmentDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "assessment")
 public class Assessment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private String review;
     private LocalDateTime reviewDate;
+
+    @ManyToOne
     private Institution institution;
+
+    @ManyToOne
     private Volunteer volunteer;
 
-    public Assessment(Institution institution, Volunteer volunteer, String review, LocalDateTime reviewDate) {
-        setReview(review);
+    public Assessment() {
+    }
+
+    public Assessment(Institution institution, Volunteer volunteer, AssessmentDto assessmentDto) {
+        setReview(assessmentDto.getReview());
         setReviewDate(DateHandler.now());
         setInstitution(institution);
         setVolunteer(volunteer);
-        institution.addAssessment(this);
     }
 
+    public Integer getId() {
+        return id;
+    }
     public String getReview() {
         return review;
     }
-    public LocalDateTime getReviewDate() {
-        return reviewDate;
-    }
-
     public void setReview(String review) {
         this.review = review;
+    }
+    public LocalDateTime getReviewDate() {
+        return reviewDate;
     }
     public void setReviewDate(LocalDateTime reviewDate) {
         this.reviewDate = reviewDate;
