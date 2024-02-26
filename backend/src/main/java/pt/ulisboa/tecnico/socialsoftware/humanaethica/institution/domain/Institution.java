@@ -3,8 +3,10 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain;
 import jakarta.persistence.*;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.domain.Assessment;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.domain.Theme;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Member;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
 
 import java.time.LocalDateTime;
@@ -25,6 +27,8 @@ public class Institution {
     private String nif;
 
     private boolean active = false;
+
+    private List<Assessment> assessments = new ArrayList<>();
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
@@ -173,5 +177,17 @@ public class Institution {
         setTokenGenerationDate(DateHandler.now());
         setConfirmationToken(token);
         return token;
+    }
+
+    public void addAssessment(Assessment assessment) {
+        assessments.add(assessment);
+    }
+
+    public void removeAssessment(Assessment assessment) {
+        assessments.remove(assessment);
+    }
+
+    public List<Assessment> getAssessments(){
+        return this.assessments;
     }
 }
