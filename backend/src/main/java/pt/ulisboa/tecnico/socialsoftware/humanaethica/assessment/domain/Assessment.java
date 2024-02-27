@@ -75,11 +75,19 @@ public class Assessment {
 
     private void verifyInvariants() {
         isValidReview();
+        isUnique();
     }
 
-    public void isValidReview() {
-        if (this.review.length() >= 10) {
+    public void isValidReview() { // Invariant 1
+        if (this.review.length() <= 10) {
             throw new HEException(ASSESSMENT_INVALID_REVIEW, this.review);
+        }
+    }
+
+    public void isUnique() { // Invariant 2
+        if (this.institution.getAssessments().stream()
+                .anyMatch(assessment -> assessment != this && assessment.getVolunteer().equals(this.volunteer))) {
+            throw new HEException(ASSESSMENT_ALREADY_EXISTS, this.review);
         }
     }
 }

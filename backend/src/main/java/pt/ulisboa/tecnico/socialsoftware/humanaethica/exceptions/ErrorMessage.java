@@ -43,7 +43,8 @@ public enum ErrorMessage {
 
     // Assessment
 
-    ASSESSMENT_INVALID_REVIEW("Assesment Review: %s, is not valid");
+    ASSESSMENT_INVALID_REVIEW("Assessment Review: %s, is not valid"),
+    ASSESSMENT_ALREADY_EXISTS("Assessment already exists in database");
 
     public final String label;
 

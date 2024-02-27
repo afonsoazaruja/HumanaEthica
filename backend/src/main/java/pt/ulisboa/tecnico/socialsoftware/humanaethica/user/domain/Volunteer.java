@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 @DiscriminatorValue(User.UserTypes.VOLUNTEER)
 public class Volunteer extends User {
+    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Assessment> assessments = new ArrayList<>();
     public Volunteer() {
     }

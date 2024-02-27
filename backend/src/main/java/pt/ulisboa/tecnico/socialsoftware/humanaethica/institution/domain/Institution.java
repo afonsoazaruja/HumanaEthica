@@ -28,6 +28,7 @@ public class Institution {
 
     private boolean active = false;
 
+    @OneToMany(mappedBy = "institution", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Assessment> assessments = new ArrayList<>();
 
     @Column(name = "creation_date")
