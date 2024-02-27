@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.domain;
 
 import jakarta.persistence.*;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.dto.AssessmentDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution;
@@ -76,6 +77,7 @@ public class Assessment {
     private void verifyInvariants() {
         isValidReview();
         isUnique();
+        institutionHasOneCompletedActivity();
     }
 
     public void isValidReview() { // Invariant 1
@@ -87,7 +89,15 @@ public class Assessment {
     public void isUnique() { // Invariant 2
         if (this.institution.getAssessments().stream()
                 .anyMatch(assessment -> assessment != this && assessment.getVolunteer().equals(this.volunteer))) {
-            throw new HEException(ASSESSMENT_ALREADY_EXISTS, this.review);
+            throw new HEException(ASSESSMENT_ALREADY_EXISTS);
+        }
+    }
+
+    public void institutionHasOneCompletedActivity() { // Invariant 3
+        if (this.institution.getActivities().stream()
+                .noneMatch(activity -> activity.getState().equals(Activity.State.APPROVED) &&
+                        activity.getEndingDate().isBefore(this.reviewDate))) {
+            throw new HEException(INSTITUTION_HAS_NO_COMPLETED_ACTIVITIES);
         }
     }
 }

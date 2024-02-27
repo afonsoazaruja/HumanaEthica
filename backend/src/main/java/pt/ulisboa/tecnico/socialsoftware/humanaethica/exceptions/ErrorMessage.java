@@ -42,9 +42,9 @@ public enum ErrorMessage {
     ACTIVITY_ALREADY_REPORTED("Activity is already reported with name %s"),
 
     // Assessment
-
     ASSESSMENT_INVALID_REVIEW("Assessment Review: %s, is not valid"),
-    ASSESSMENT_ALREADY_EXISTS("Assessment already exists in database");
+    ASSESSMENT_ALREADY_EXISTS("Assessment already exists in database"),
+    INSTITUTION_HAS_NO_COMPLETED_ACTIVITIES("Institution has no completed activities");
 
     public final String label;
 
