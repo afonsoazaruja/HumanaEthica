@@ -2,10 +2,13 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.domain;
 
 import jakarta.persistence.*;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.dto.AssessmentDto;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
 import java.time.LocalDateTime;
+
+import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.*;
 
 @Entity
 @Table(name = "assessment")
@@ -31,33 +34,52 @@ public class Assessment {
         setReviewDate(DateHandler.now());
         setInstitution(institution);
         setVolunteer(volunteer);
+        verifyInvariants();
     }
 
     public Integer getId() {
         return id;
     }
+
     public String getReview() {
         return review;
     }
+
     public void setReview(String review) {
         this.review = review;
     }
+
     public LocalDateTime getReviewDate() {
         return reviewDate;
     }
+
     public void setReviewDate(LocalDateTime reviewDate) {
         this.reviewDate = reviewDate;
     }
+
     public void setInstitution(Institution institution) {
         this.institution = institution;
     }
+
     public Institution getInstitution() {
         return this.institution;
     }
+
     public void setVolunteer(Volunteer volunteer) {
         this.volunteer = volunteer;
     }
+
     public Volunteer getVolunteer() {
         return this.volunteer;
+    }
+
+    private void verifyInvariants() {
+        isValidReview();
+    }
+
+    public void isValidReview() {
+        if (this.review.length() >= 10) {
+            throw new HEException(ASSESSMENT_INVALID_REVIEW, this.review);
+        }
     }
 }
