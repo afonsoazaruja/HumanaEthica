@@ -12,6 +12,7 @@ import java.util.List;
 @DiscriminatorValue(User.UserTypes.VOLUNTEER)
 public class Volunteer extends User {
 
+    @OneToMany
     private List<Enrollment> enrollments;
 
     public Volunteer() {

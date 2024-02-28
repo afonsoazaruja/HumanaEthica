@@ -17,6 +17,7 @@ public class EnrollmentDto {
         setMotivation(enrollment.getMotivation());
         setDateTime(enrollment.getDateTime());
     }
+
     public void setId(Integer id) {this.id = id;}
 
     public Integer getId() {return id;}
