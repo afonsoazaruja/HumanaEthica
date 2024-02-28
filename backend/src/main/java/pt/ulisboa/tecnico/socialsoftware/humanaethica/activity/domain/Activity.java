@@ -43,7 +43,7 @@ public class Activity {
     @JoinTable(name = "activity_themes")
     private List<Theme> themes = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "activity")
     private List<Enrollment> enrollments;
 
     @ManyToOne

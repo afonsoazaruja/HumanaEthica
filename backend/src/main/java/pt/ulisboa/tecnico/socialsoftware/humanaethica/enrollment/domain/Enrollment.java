@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.domain;
 
 import jakarta.persistence.*;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
 
@@ -11,7 +10,7 @@ import java.time.LocalDateTime;
 import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.*;
 
 @Entity
-@Table(name = "Enrollment")
+@Table(name = "enrollment")
 public class Enrollment {
 
     @Id

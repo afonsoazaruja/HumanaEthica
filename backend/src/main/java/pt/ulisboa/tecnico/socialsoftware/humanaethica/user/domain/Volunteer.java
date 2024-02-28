@@ -19,6 +19,7 @@ public class Volunteer extends User {
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participation> participations = new ArrayList<>();
 
+    @OneToMany
     private List<Enrollment> enrollments;
 
     public Volunteer() {
