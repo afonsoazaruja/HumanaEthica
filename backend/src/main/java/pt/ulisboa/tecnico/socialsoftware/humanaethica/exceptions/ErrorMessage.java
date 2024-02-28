@@ -49,7 +49,10 @@ public enum ErrorMessage {
     // Participation
     PARTICIPATION_TOO_MANY_PARTICIPANTS("Activity has reached it's limit of %d participants"),
     PARTICIPATION_VOLUNTEER_ALREADY_PARTICIPATES("Volunteer %s can only participate once in the activity"),
-    ACCEPTANCEDATE_IS_BEFORE_DEADLINE("Volunteer can only participate after the activity deadline: %s");
+    ACCEPTANCEDATE_IS_BEFORE_DEADLINE("Volunteer can only participate after the activity deadline: %s"),
+
+    //Enrollment
+    ENROLLMENT_MOTIVATION_INVALID("Motivation must have a length of at least 10 characters");
 
     public final String label;
     ErrorMessage(String label) {
