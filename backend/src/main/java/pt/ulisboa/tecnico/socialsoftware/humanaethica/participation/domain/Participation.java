@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.domain;
 import jakarta.persistence.*;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.dto.ParticipationDto;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
 
 import java.time.LocalDateTime;
 @Entity
@@ -18,13 +19,17 @@ public class Participation {
     @ManyToOne
     private Activity activity;
 
+    @ManyToOne
+    private Volunteer volunteer;
+
     public Participation() {
 
     }
-    public Participation(Integer rating, LocalDateTime acceptanceDate, Activity activity) {
+    public Participation(Integer rating, LocalDateTime acceptanceDate, Activity activity, Volunteer volunteer) {
         this.rating = rating;
         this.acceptanceDate = acceptanceDate;
         this.activity = activity;
+        this.volunteer = volunteer;
         addParticipation();
     }
 
@@ -49,9 +54,10 @@ public class Participation {
         this.acceptanceDate = acceptanceDate;
     }
 
-    public void addParticipation(){activity.addParticipation(this);}
+    public void addParticipation(){activity.addParticipation(this);
+    volunteer.addParticipation(this);}
 
-    public void removeParticipation(){activity.removeParticipation(this);}
+    public void removeParticipation(){activity.removeParticipation(this);volunteer.removeParticipation(this);}
     public Activity getActivity() {
         return this.activity;
     }
