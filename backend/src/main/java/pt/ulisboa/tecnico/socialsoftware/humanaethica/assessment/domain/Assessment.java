@@ -80,20 +80,20 @@ public class Assessment {
         institutionHasOneCompletedActivity();
     }
 
-    public void isValidReview() { // Invariant 1
-        if (this.review.length() <= 10) {
+    private void isValidReview() { // Invariant 1
+        if (this.review.length() < 10) {
             throw new HEException(ASSESSMENT_INVALID_REVIEW, this.review);
         }
     }
 
-    public void isUnique() { // Invariant 2
+    private void isUnique() { // Invariant 2
         if (this.institution.getAssessments().stream()
                 .anyMatch(assessment -> assessment != this && assessment.getVolunteer().equals(this.volunteer))) {
             throw new HEException(ASSESSMENT_ALREADY_EXISTS);
         }
     }
 
-    public void institutionHasOneCompletedActivity() { // Invariant 3
+    private void institutionHasOneCompletedActivity() { // Invariant 3
         if (this.institution.getActivities().stream()
                 .noneMatch(activity -> activity.getState().equals(Activity.State.APPROVED) &&
                         activity.getEndingDate().isBefore(this.reviewDate))) {
