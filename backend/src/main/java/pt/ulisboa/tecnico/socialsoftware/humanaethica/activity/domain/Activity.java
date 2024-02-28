@@ -248,7 +248,10 @@ public class Activity {
         participations.remove(participation);
     }
 
-
+    public List<Participation> getParticipations() {
+        return participations;
+    }
+    
 
     private void verifyInvariants() {
         nameIsRequired();
