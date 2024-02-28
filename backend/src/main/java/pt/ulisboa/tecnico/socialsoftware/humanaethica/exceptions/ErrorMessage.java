@@ -42,8 +42,8 @@ public enum ErrorMessage {
     ACTIVITY_ALREADY_REPORTED("Activity is already reported with name %s"),
 
     //Enrollment
-    ENROLLMENT_MOTIVATION_INVALID("Motivation must have a length of at least 10 characters");
-
+    ENROLLMENT_MOTIVATION_INVALID("Motivation must have a length of at least 10 characters"),
+    ENROLLMENT_ALREADY_EXISTS("Enrollment already exists in database");
     public final String label;
 
     ErrorMessage(String label) {
