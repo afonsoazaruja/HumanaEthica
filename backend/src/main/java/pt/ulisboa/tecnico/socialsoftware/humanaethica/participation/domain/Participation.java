@@ -55,12 +55,20 @@ public class Participation {
     }
 
     public void addParticipation(){
-        boolean participantsWithinLimit = activity.getParticipations().size() < activity.getParticipantsNumberLimit();
-        boolean hasExistingParticipation = volunteer.verifyParticipation(this);
 
-        if (!hasExistingParticipation && participantsWithinLimit) {
-            this.activity.addParticipation(this);
-            this.volunteer.addParticipation(this);
+        // Check if the application deadline has already passed
+        if (this.acceptanceDate.isAfter(activity.getApplicationDeadline())) {
+
+            // Check if the total number of participants doesn't exceed the limit
+            boolean participantsWithinLimit = activity.getParticipations().size() <= activity.getParticipantsNumberLimit();
+
+            // Check if the volunteer hasn't already participated in the activity
+            boolean hasExistingParticipation = volunteer.verifyParticipation(this);
+
+            // If all conditions are met, add the participation to the activity
+            if (!hasExistingParticipation && participantsWithinLimit) {
+                this.activity.addParticipation(this);
+            }
         }
     }
 
