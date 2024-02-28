@@ -68,10 +68,17 @@ public class Enrollment {
     }
     private void verifyInvariants() {
         verifyMotivationLength();
+        enrollmentIsUnique();
     }
     private void verifyMotivationLength() {
         if (this.motivation.length() < 10) {
             throw new HEException(ENROLLMENT_MOTIVATION_INVALID, this.motivation);
+        }
+    }
+    private void enrollmentIsUnique() {
+        if (this.volunteer.getEnrollments().stream()
+                .anyMatch(enrollment -> enrollment != this && enrollment.getVolunteer().equals(this.volunteer))) {
+            throw new HEException(ENROLLMENT_ALREADY_EXISTS, this.id);
         }
     }
 }

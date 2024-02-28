@@ -52,8 +52,8 @@ public enum ErrorMessage {
     ACCEPTANCEDATE_IS_BEFORE_DEADLINE("Volunteer can only participate after the activity deadline: %s"),
 
     //Enrollment
-    ENROLLMENT_MOTIVATION_INVALID("Motivation must have a length of at least 10 characters");
-
+    ENROLLMENT_MOTIVATION_INVALID("Motivation must have a length of at least 10 characters"),
+    ENROLLMENT_ALREADY_EXISTS("Enrollment already exists in database");
     public final String label;
     ErrorMessage(String label) {
         this.label = label;
