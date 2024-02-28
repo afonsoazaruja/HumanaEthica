@@ -2,9 +2,13 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.domain;
 
 import jakarta.persistence.*;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
 
 import java.time.LocalDateTime;
+
+import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.*;
 
 @Entity
 @Table(name = "Enrollment")
@@ -61,5 +65,13 @@ public class Enrollment {
 
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
+    }
+    private void verifyInvariants() {
+        verifyMotivationLength();
+    }
+    private void verifyMotivationLength() {
+        if (this.motivation.length() < 10) {
+            throw new HEException(ENROLLMENT_MOTIVATION_INVALID, this.motivation);
+        }
     }
 }
