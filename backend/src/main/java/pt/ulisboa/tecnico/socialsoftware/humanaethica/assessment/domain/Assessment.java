@@ -81,7 +81,7 @@ public class Assessment {
     }
 
     private void isValidReview() { // Invariant 1
-        if (this.review.length() < 10) {
+        if (this.review == null || this.review.length() < 10) {
             throw new HEException(ASSESSMENT_INVALID_REVIEW, this.review);
         }
     }
@@ -95,8 +95,7 @@ public class Assessment {
 
     private void institutionHasOneCompletedActivity() { // Invariant 3
         if (this.institution.getActivities().stream()
-                .noneMatch(activity -> activity.getState().equals(Activity.State.APPROVED) &&
-                        activity.getEndingDate().isBefore(this.reviewDate))) {
+                .noneMatch(activity -> activity.getEndingDate().isBefore(this.reviewDate))) {
             throw new HEException(INSTITUTION_HAS_NO_COMPLETED_ACTIVITIES);
         }
     }
