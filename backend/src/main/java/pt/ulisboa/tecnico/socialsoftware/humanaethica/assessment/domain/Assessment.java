@@ -60,6 +60,7 @@ public class Assessment {
 
     public void setInstitution(Institution institution) {
         this.institution = institution;
+        institution.addAssessment(this);
     }
 
     public Institution getInstitution() {
@@ -68,6 +69,7 @@ public class Assessment {
 
     public void setVolunteer(Volunteer volunteer) {
         this.volunteer = volunteer;
+        volunteer.addAssessment(this);
     }
 
     public Volunteer getVolunteer() {

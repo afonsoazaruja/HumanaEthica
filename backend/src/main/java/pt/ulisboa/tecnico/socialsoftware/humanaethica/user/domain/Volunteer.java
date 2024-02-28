@@ -33,11 +33,11 @@ public class Volunteer extends User {
     } */
 
     public void addAssessment(Assessment assessment) {
-        assessments.add(assessment);
+        this.assessments.add(assessment);
     }
 
     public void removeAssessment(Assessment assessment) {
-        assessments.remove(assessment);
+        this.assessments.remove(assessment);
     }
     public List<Assessment> getAssessments() {
         return this.assessments;
