@@ -54,8 +54,14 @@ public class Participation {
         this.acceptanceDate = acceptanceDate;
     }
 
-    public void addParticipation(){activity.addParticipation(this);
-    volunteer.addParticipation(this);}
+    public void addParticipation(){
+        boolean participantsWithinLimit = activity.getParticipations().size() < activity.getParticipantsNumberLimit();
+
+        if (participantsWithinLimit) {
+            this.activity.addParticipation(this);
+            this.volunteer.addParticipation(this);
+        }
+    }
 
     public void removeParticipation(){activity.removeParticipation(this);volunteer.removeParticipation(this);}
     public Activity getActivity() {
@@ -65,4 +71,6 @@ public class Participation {
     public void setActivity(Activity activity) {
         this.activity = activity;
     }
+
 }
+

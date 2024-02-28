@@ -26,7 +26,7 @@ public class Volunteer extends User {
         super(name, Role.VOLUNTEER, state);
     }
 
-    public void addParticipation(Participation participation) {
+    public void addParticipation(Participation participation){
         participations.add(participation);
     }
 
