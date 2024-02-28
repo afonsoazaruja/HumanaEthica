@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.dto.ActivityDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.domain.Participation;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.domain.Theme;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.*;
@@ -29,6 +31,10 @@ public class Activity {
     private LocalDateTime endingDate;
     private LocalDateTime applicationDeadline;
 
+
+    @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Participation> participations = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     private Activity.State state = Activity.State.APPROVED;
 
@@ -44,6 +50,7 @@ public class Activity {
 
     public Activity() {
     }
+
 
     public Activity(ActivityDto activityDto, Institution institution, List<Theme> themes) {
         setInstitution(institution);
@@ -232,6 +239,16 @@ public class Activity {
     public Institution getInstitution() {
         return institution;
     }
+
+    public void addParticipation(Participation participation) {
+        participations.add(participation);
+    }
+
+    public void removeParticipation(Participation participation) {
+        participations.remove(participation);
+    }
+
+
 
     private void verifyInvariants() {
         nameIsRequired();
