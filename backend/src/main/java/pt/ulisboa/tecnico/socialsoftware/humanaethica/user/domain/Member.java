@@ -3,8 +3,12 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.domain.AuthUser;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.domain.Participation;
+
+import java.time.LocalDateTime;
 
 @Entity
 @DiscriminatorValue(User.UserTypes.MEMBER)
@@ -30,4 +34,8 @@ public class Member extends User {
         this.institution = institution;
     }
 
+    public Participation associateVolunteer(Integer rating, Volunteer volunteer, Activity activity){
+        LocalDateTime localTime = LocalDateTime.now();
+        return new Participation(rating, localTime, activity, volunteer);
+    }
 }
