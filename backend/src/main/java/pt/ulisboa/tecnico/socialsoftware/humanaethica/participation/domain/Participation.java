@@ -56,8 +56,9 @@ public class Participation {
 
     public void addParticipation(){
         boolean participantsWithinLimit = activity.getParticipations().size() < activity.getParticipantsNumberLimit();
+        boolean hasExistingParticipation = volunteer.verifyParticipation(this);
 
-        if (participantsWithinLimit) {
+        if (!hasExistingParticipation && participantsWithinLimit) {
             this.activity.addParticipation(this);
             this.volunteer.addParticipation(this);
         }
