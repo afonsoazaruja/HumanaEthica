@@ -14,7 +14,7 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 import spock.lang.Unroll
 
 @DataJpaTest
-class CreateAssessmentTest extends SpockTest{
+class CreateAssessmentMethodTest extends SpockTest{
     Institution institution = Mock()
     Volunteer volunteer = Mock()
     Activity activity = Mock()
