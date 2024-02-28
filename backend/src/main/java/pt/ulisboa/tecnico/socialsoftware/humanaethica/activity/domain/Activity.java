@@ -251,7 +251,6 @@ public class Activity {
     public List<Participation> getParticipations() {
         return participations;
     }
-    
 
     private void verifyInvariants() {
         nameIsRequired();
