@@ -39,7 +39,12 @@ public enum ErrorMessage {
     ACTIVITY_ALREADY_APPROVED("Activity is already approved with name %s"),
     ACTIVITY_ALREADY_EXISTS("Activity already exists in database"),
     ACTIVITY_ALREADY_SUSPENDED("Activity is already suspended with name %s"),
-    ACTIVITY_ALREADY_REPORTED("Activity is already reported with name %s");
+    ACTIVITY_ALREADY_REPORTED("Activity is already reported with name %s"),
+
+    // Participation
+    PARTICIPATION_TOO_MANY_PARTICIPANTS("Activity has reached it's limit of %d participants"),
+    PARTICIPATION_VOLUNTEER_ALREADY_PARTICIPATES("Volunteer %s can only participate once in the activity"),
+    PARTICIPATION_IS_BEFORE_ACCEPTANCE_DATE("Volunteer can only participate after the acceptance date: %s");
 
     public final String label;
 
