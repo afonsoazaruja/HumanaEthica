@@ -1,7 +1,7 @@
 ## Datasource
-spring.datasource.url=jdbc:postgresql://localhost:<DATABASE PORT>/<DATABASE NAME>
-spring.datasource.username= <DATABASE USERNAME>
-spring.datasource.password= <DATABASE PASSWORD>
+spring.datasource.url=jdbc:postgresql://localhost:5432/hedb
+spring.datasource.username= postgres
+spring.datasource.password= postgres
 spring.datasource.driver-class-name=org.postgresql.Driver
 
 ## Jpa

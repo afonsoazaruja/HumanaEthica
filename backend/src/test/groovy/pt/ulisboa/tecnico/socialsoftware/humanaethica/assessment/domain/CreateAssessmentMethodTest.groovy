@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.domain
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.BeanConfiguration
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity
@@ -14,11 +15,44 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 import spock.lang.Unroll
 
 @DataJpaTest
-class CreateAssessmentMethodTest extends SpockTest{
+class CreateAssessmentMethodTest extends SpockTest {
     Institution institution = Mock()
-    Volunteer volunteer = Mock()
+    Volunteer volunteer = Mock(Volunteer)
     Activity activity = Mock()
+    Assessment assessment = Mock()
     def assessmentDto
+
+    def "create a new assessment"() {
+        given:
+        activity.getEndingDate() >> DateHandler.toISOString(TWO_DAYS_AGO)
+        institution.getActivities() >> [activity]
+        institution.getAssessments() >> [assessment]
+        volunteer.getAssessments() >> [assessment]
+
+        and: "an assessment dto"
+        assessmentDto = new AssessmentDto()
+        assessmentDto.setReview(review)
+        assessmentDto.setReviewDate(NOW)
+
+        when:
+        Assessment assessment = new Assessment(institution, volunteer, assessmentDto)
+
+        then:
+        assessment.getInstitution() == institution
+        assessment.getVolunteer() == volunteer
+        assessment.getReview() == review
+        assessment.getReviewDate() != null
+        assessment.getReviewDate().isBefore(NOW)
+
+        // check if methods were called only once
+        and:
+        1 * institution.addAssessment(_)
+        1 * volunteer.addAssessment(_)
+
+        where:
+        review << ["valid review", "1234567890"]
+    }
+
 
     @Unroll
     def "create assessment and violate review has at least 10 characters invariant : review=#review"() {
