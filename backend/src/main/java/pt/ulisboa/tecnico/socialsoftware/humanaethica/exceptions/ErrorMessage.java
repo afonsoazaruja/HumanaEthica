@@ -44,7 +44,12 @@ public enum ErrorMessage {
     // Assessment
     ASSESSMENT_INVALID_REVIEW("Assessment Review: %s, is not valid"),
     VOLUNTEER_ALREADY_MADE_ASSESSMENT_FOR_INSTITUTION("Volunteer already made an assessment for the institution"),
-    INSTITUTION_HAS_NO_COMPLETED_ACTIVITIES("Institution has no completed activities");
+    INSTITUTION_HAS_NO_COMPLETED_ACTIVITIES("Institution has no completed activities"),
+
+    // Participation
+    PARTICIPATION_TOO_MANY_PARTICIPANTS("Activity has reached it's limit of %d participants"),
+    PARTICIPATION_VOLUNTEER_ALREADY_PARTICIPATES("Volunteer %s can only participate once in the activity"),
+    PARTICIPATION_IS_BEFORE_ACCEPTANCE_DATE("Volunteer can only participate after the acceptance date: %s");
 
     public final String label;
     ErrorMessage(String label) {
