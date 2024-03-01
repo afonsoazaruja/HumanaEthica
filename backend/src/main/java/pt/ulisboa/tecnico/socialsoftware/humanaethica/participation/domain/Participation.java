@@ -30,10 +30,11 @@ public class Participation {
 
 
     public Participation(Integer rating, LocalDateTime acceptanceDate, Activity activity, Volunteer volunteer) {
-        this.rating = rating;
-        this.acceptanceDate = acceptanceDate;
-        this.activity = activity;
-        this.volunteer = volunteer;
+        setRating(rating);
+        setAcceptanceDate(acceptanceDate);
+        setActivity(activity);
+        setVolunteer(volunteer);
+        verifyInvariants();
     }
 
 
@@ -65,6 +66,13 @@ public class Participation {
         this.activity = activity;
     }
 
+    public Volunteer getVolunteer() {
+        return volunteer;
+    }
+
+    public void setVolunteer(Volunteer volunteer) {
+        this.volunteer = volunteer;
+    }
 
     private void verifyInvariants() {
         participantsWithinLimit();
