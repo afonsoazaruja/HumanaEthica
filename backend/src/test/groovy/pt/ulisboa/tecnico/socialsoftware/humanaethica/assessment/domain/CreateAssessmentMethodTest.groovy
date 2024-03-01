@@ -17,35 +17,32 @@ import spock.lang.Unroll
 @DataJpaTest
 class CreateAssessmentMethodTest extends SpockTest {
     Institution institution = Mock()
-    Volunteer volunteer = Mock(Volunteer)
+    Volunteer volunteer = Mock()
     Activity activity = Mock()
-    Assessment assessment = Mock()
+    Assessment otherAssessment = Mock()
+    Volunteer otherVolunteer = Mock()
     def assessmentDto
 
-    def "create a new assessment"() {
+    @Unroll
+    def "successfully create a new assessment where the institution has another assessment"() {
         given:
-        activity.getEndingDate() >> DateHandler.toISOString(TWO_DAYS_AGO)
+        activity.getEndingDate() >> TWO_DAYS_AGO
         institution.getActivities() >> [activity]
-        institution.getAssessments() >> [assessment]
-        volunteer.getAssessments() >> [assessment]
-
+        institution.getAssessments() >> [otherAssessment]
+        otherAssessment.getVolunteer() >> otherVolunteer
         and: "an assessment dto"
         assessmentDto = new AssessmentDto()
         assessmentDto.setReview(review)
-        assessmentDto.setReviewDate(NOW)
 
         when:
-        Assessment assessment = new Assessment(institution, volunteer, assessmentDto)
+        Assessment result = new Assessment(institution, volunteer, assessmentDto)
 
-        then:
-        assessment.getInstitution() == institution
-        assessment.getVolunteer() == volunteer
-        assessment.getReview() == review
-        assessment.getReviewDate() != null
-        assessment.getReviewDate().isBefore(NOW)
-
+        then: "check result"
+        result.getInstitution() == institution
+        result.getVolunteer() == volunteer
+        result.getReview() == review
         // check if methods were called only once
-        and:
+        and: "invocations"
         1 * institution.addAssessment(_)
         1 * volunteer.addAssessment(_)
 
@@ -57,12 +54,11 @@ class CreateAssessmentMethodTest extends SpockTest {
     @Unroll
     def "create assessment and violate review has at least 10 characters invariant : review=#review"() {
         given:
-        activity.getEndingDate() >> DateHandler.toISOString(TWO_DAYS_AGO)
+        activity.getEndingDate() >> TWO_DAYS_AGO
         institution.getActivities() >> [activity]
         and: "an assessment dto"
         assessmentDto = new AssessmentDto()
         assessmentDto.setReview(review)
-        assessmentDto.setReviewDate(NOW)
 
         when:
         new Assessment(institution, volunteer, assessmentDto)
