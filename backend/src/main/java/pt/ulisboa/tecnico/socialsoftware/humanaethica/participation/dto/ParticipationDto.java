@@ -4,13 +4,14 @@ import jakarta.activation.DataHandler;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.domain.Participation;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
 
 import java.time.LocalDateTime;
 
 public class ParticipationDto {
     private Integer id;
     private Integer rating;
-    private LocalDateTime acceptanceDate;
+    private String acceptanceDate;
     private Activity activity;
     private Volunteer volunteer;
 
@@ -21,7 +22,7 @@ public class ParticipationDto {
     public ParticipationDto(Participation participation) {
         setId(participation.getId());
         setRating(participation.getRating());
-        setAcceptanceDate(participation.getAcceptanceDate());
+        setAcceptanceDate(DateHandler.toISOString(participation.getAcceptanceDate()));
         setActivity(participation.getActivity());
         setVolunteer(participation.getVolunteer());
     }
@@ -43,11 +44,11 @@ public class ParticipationDto {
         this.rating = rating;
     }
 
-    public LocalDateTime getAcceptanceDate() {
+    public String getAcceptanceDate() {
         return acceptanceDate;
     }
 
-    public void setAcceptanceDate(LocalDateTime acceptanceDate) {
+    public void setAcceptanceDate(String acceptanceDate) {
         this.acceptanceDate = acceptanceDate;
     }
 
