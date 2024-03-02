@@ -65,6 +65,7 @@ public class Participation {
 
     public void setActivity(Activity activity) {
         this.activity = activity;
+        activity.addParticipation(this);
     }
 
     public Volunteer getVolunteer() {
@@ -73,6 +74,7 @@ public class Participation {
 
     public void setVolunteer(Volunteer volunteer) {
         this.volunteer = volunteer;
+        volunteer.addParticipation(this);
     }
 
     private void verifyInvariants() {
