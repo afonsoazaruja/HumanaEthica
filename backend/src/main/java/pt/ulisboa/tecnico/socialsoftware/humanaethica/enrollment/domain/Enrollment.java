@@ -94,8 +94,7 @@ public class Enrollment {
     }
 
     private void enrollmentIsUnique() {
-        if (this.volunteer.getEnrollments().stream()
-                .anyMatch(enrollment -> enrollment != this && enrollment.getVolunteer().equals(this.volunteer))) {
+        if (this.volunteer.getEnrollments().contains(this)) {
             throw new HEException(ENROLLMENT_ALREADY_EXISTS, this.id);
         }
     }
