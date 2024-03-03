@@ -9,8 +9,7 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
 
 import java.time.LocalDateTime;
 
-import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.ENROLLMENT_ALREADY_EXISTS;
-import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.ENROLLMENT_MOTIVATION_INVALID;
+import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.*;
 
 @Entity
 @Table(name = "enrollment")
@@ -97,6 +96,12 @@ public class Enrollment {
         if (this.volunteer.getEnrollments().stream()
                 .anyMatch(enrollment -> enrollment != this && enrollment.getVolunteer().equals(this.volunteer))) {
             throw new HEException(ENROLLMENT_ALREADY_EXISTS, this.id);
+        }
+    }
+
+    private void enrollmentBeforeDeadline() {
+        if (this.enrollmentDateTime.isAfter(this.activity.getApplicationDeadline())) {
+            throw new HEException(ENROLLMENT_AFTER_DEADLINE);
         }
     }
 }
