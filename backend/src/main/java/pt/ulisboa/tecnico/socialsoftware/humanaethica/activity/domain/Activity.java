@@ -252,6 +252,8 @@ public class Activity {
         return participations;
     }
 
+    public Integer getNumberOfParticipants() { return this.getParticipations().size(); }
+
     private void verifyInvariants() {
         nameIsRequired();
         regionIsRequired();

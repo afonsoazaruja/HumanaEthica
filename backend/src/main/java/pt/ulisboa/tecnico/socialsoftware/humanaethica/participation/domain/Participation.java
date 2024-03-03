@@ -84,7 +84,7 @@ public class Participation {
     }
 
     private void participantsWithinLimit() {
-        if (activity.getParticipations().size() > activity.getParticipantsNumberLimit()) {
+        if (activity.getNumberOfParticipants() > activity.getParticipantsNumberLimit()) {
             throw new HEException(ErrorMessage.PARTICIPATION_TOO_MANY_PARTICIPANTS, activity.getParticipantsNumberLimit());
         }
     }

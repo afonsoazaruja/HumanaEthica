@@ -28,15 +28,14 @@ class CreateParticipationMethodTest extends SpockTest {
     def "create participation with activity and volunteer has another participation"() {
         given:
         otherParticipation.getVolunteer().getName() >> USER_2_NAME
-        activity.getParticipations() >> [otherParticipation]
+        activity.getNumberOfParticipants() >> 1
         activity.getName() >> ACTIVITY_NAME_1
         activity.getRegion() >> ACTIVITY_REGION_1
         activity.getParticipantsNumberLimit() >> 2
         activity.getDescription() >> ACTIVITY_DESCRIPTION_1
         activity.getApplicationDeadline() >> ONE_DAY_AGO
         volunteer.getName() >> USER_1_NAME
-
-        and: "participation info"
+        and: "a participation dto"
         participationDto = new ParticipationDto()
         participationDto.rating = 10
 
@@ -50,6 +49,28 @@ class CreateParticipationMethodTest extends SpockTest {
         and: "invocations"
         1 * activity.addParticipation(_)
         1 * volunteer.addParticipation(_)
+    }
+
+    @Unroll
+    def "create participation and violate invariant participantsWithinLimit, participantsNumberLimit < participations"() {
+        given:
+        activity.getNumberOfParticipants() >> 2
+        activity.getName() >> ACTIVITY_NAME_1
+        activity.getRegion() >> ACTIVITY_REGION_1
+        activity.getParticipantsNumberLimit() >> 1
+        activity.getDescription() >> ACTIVITY_DESCRIPTION_1
+        activity.getApplicationDeadline() >> ONE_DAY_AGO
+        volunteer.getName() >> USER_1_NAME
+        and: "a participation dto"
+        participationDto = new ParticipationDto()
+        participationDto.rating = 10
+
+        when:
+        new Participation(activity, volunteer, participationDto)
+
+        then: "check results"
+        def error = thrown(HEException)
+        error.getErrorMessage() == ErrorMessage.PARTICIPATION_TOO_MANY_PARTICIPANTS
     }
 
     @TestConfiguration
