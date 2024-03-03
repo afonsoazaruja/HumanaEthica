@@ -1,13 +1,14 @@
 package pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.dto;
 
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.domain.Enrollment;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
 
 import java.time.LocalDateTime;
 
 public class EnrollmentDto {
     private Integer id;
     private String motivation;
-    private LocalDateTime dateTime;
+    private String dateTime;
 
     public EnrollmentDto(){
     }
@@ -15,7 +16,7 @@ public class EnrollmentDto {
     public EnrollmentDto(Enrollment enrollment){
         setId(enrollment.getId());
         setMotivation(enrollment.getMotivation());
-        setDateTime(enrollment.getDateTime());
+        setDateTime(DateHandler.toISOString(enrollment.getDateTime()));
     }
 
     public void setId(Integer id) {this.id = id;}
@@ -26,9 +27,9 @@ public class EnrollmentDto {
 
     public String getMotivation() {return motivation;}
 
-    public void setDateTime(LocalDateTime dateTime) {this.dateTime = dateTime;}
+    public void setDateTime(String dateTime) {this.dateTime = dateTime;}
 
-    public LocalDateTime getDateTime() {return dateTime;}
+    public String getDateTime() {return dateTime;}
 
     @Override
     public String toString() {
