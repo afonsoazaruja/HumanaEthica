@@ -17,7 +17,7 @@ public class Enrollment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String motivation;
-    private LocalDateTime dateTime;
+    private LocalDateTime enrollmentDateTime;
 
     @ManyToOne
     @JoinColumn(name = "volunteer")
@@ -47,7 +47,7 @@ public class Enrollment {
     }
 
     public LocalDateTime getDateTime() {
-        return dateTime;
+        return enrollmentDateTime;
     }
 
     public void setVolunteer(Volunteer volunteer) {
@@ -63,7 +63,7 @@ public class Enrollment {
     }
 
     public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+        this.enrollmentDateTime = dateTime;
     }
     private void verifyInvariants() {
         verifyMotivationLength();
