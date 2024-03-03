@@ -84,6 +84,7 @@ public class Enrollment {
     private void verifyInvariants() {
         verifyMotivationLength();
         enrollmentIsUnique();
+        enrollmentBeforeDeadline();
     }
 
     private void verifyMotivationLength() {
