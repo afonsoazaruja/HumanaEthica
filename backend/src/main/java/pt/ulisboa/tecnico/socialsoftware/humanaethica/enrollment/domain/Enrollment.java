@@ -88,7 +88,7 @@ public class Enrollment {
     }
 
     private void verifyMotivationLength() {
-        if (this.motivation.length() < 10) {
+        if (this.motivation == null || this.motivation.length() < 10) {
             throw new HEException(ENROLLMENT_MOTIVATION_INVALID, this.motivation);
         }
     }
