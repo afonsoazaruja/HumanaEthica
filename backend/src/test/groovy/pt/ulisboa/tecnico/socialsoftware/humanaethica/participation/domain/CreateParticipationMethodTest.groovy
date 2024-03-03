@@ -39,6 +39,7 @@ class CreateParticipationMethodTest extends SpockTest {
         participationDto = new ParticipationDto()
         participationDto.rating = 10
 
+
         when:
         def result = new Participation(activity, volunteer, participationDto)
 
@@ -71,6 +72,29 @@ class CreateParticipationMethodTest extends SpockTest {
         then: "check results"
         def error = thrown(HEException)
         error.getErrorMessage() == ErrorMessage.PARTICIPATION_TOO_MANY_PARTICIPANTS
+    }
+
+    @Unroll
+    def "create participation and violate invariant isUnique, two participations from the same volunteer"() {
+        given:
+        activity.getName() >> ACTIVITY_NAME_1
+        activity.getRegion() >> ACTIVITY_REGION_1
+        activity.getNumberOfParticipants() >> 1
+        activity.getParticipantsNumberLimit() >> 2
+        activity.getDescription() >> ACTIVITY_DESCRIPTION_1
+        activity.getApplicationDeadline() >> ONE_DAY_AGO
+        volunteer.getName() >> USER_1_NAME
+        volunteer.verifyParticipation(_) >> true
+        and: "a participation dto"
+        participationDto = new ParticipationDto()
+        participationDto.rating = 10
+
+        when:
+        new Participation(activity, volunteer, participationDto)
+
+        then: "check results"
+        def error = thrown(HEException)
+        error.getErrorMessage() == ErrorMessage.PARTICIPATION_VOLUNTEER_ALREADY_PARTICIPATES
     }
 
     @TestConfiguration
