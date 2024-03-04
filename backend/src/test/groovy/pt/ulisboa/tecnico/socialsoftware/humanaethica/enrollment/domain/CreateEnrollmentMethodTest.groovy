@@ -6,7 +6,6 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.dto.EnrollmentD
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 import spock.lang.Unroll
 
 class CreateEnrollmentMethodTest extends SpockTest {
@@ -20,6 +19,25 @@ class CreateEnrollmentMethodTest extends SpockTest {
     def setup() {
         enrollmentDto = new EnrollmentDto()
         enrollmentDto.setMotivation(ENROLLMENT_MOTIVATION_1)
+    }
+
+    @Unroll
+    def "create enrollment with activity and volunteer"() {
+        given: "avoid exception on invariants 2 and 3"
+        volunteer.getEnrollments() >> []
+        activity.getApplicationDeadline() >> IN_ONE_DAY
+
+        when:
+        def enrollment = new Enrollment(activity, volunteer, enrollmentDto)
+
+        then:
+        enrollment.getVolunteer() == volunteer
+        enrollment.getActivity() == activity
+        enrollment.getMotivation() == ENROLLMENT_MOTIVATION_1
+        // can we test enrollment.getEnrollmentDateTime()?
+        and:
+        1 * volunteer.addEnrollment(_)
+        1 * activity.addEnrollment(_)
     }
 
     @Unroll
@@ -42,7 +60,7 @@ class CreateEnrollmentMethodTest extends SpockTest {
 
     }
     @Unroll
-    def "create enrollment and violate invariant enrollment must be unique"() {
+    def "create enrollment and violate invariant enrollment must be unique for a volunteer"() {
         given:
         otherEnrollment.getActivity() >> activity
 
@@ -63,7 +81,7 @@ class CreateEnrollmentMethodTest extends SpockTest {
         volunteer.getEnrollments() >> []
 
         and:
-        activity.getApplicationDeadline() >> days
+        activity.getApplicationDeadline() >> deadline
 
         when:
         new Enrollment(activity, volunteer, enrollmentDto)
@@ -73,6 +91,6 @@ class CreateEnrollmentMethodTest extends SpockTest {
         error.getErrorMessage() == ErrorMessage.ENROLLMENT_AFTER_DEADLINE
 
         where:
-        days << [ONE_DAY_AGO, TWO_DAYS_AGO]
+        deadline << [ONE_DAY_AGO, TWO_DAYS_AGO]
     }
 }
