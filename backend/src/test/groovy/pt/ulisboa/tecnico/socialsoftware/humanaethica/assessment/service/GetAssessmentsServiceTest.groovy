@@ -39,7 +39,7 @@ class GetAssessmentsServiceTest extends SpockTest {
         assessmentRepository.save(assessment)
 
         when:
-        def result = assessmentService.getAssessmentsByInstitutionId(institution.id)
+        def result = assessmentService.getAssessmentsByInstitution(institution.id)
 
         then:
         result.size() == 2

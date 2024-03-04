@@ -78,7 +78,7 @@ public class Assessment {
 
     private void verifyInvariants() {
         isValidReview();
-        isUnique();
+        assessmentIsUnique();
         institutionHasOneCompletedActivity();
     }
 
@@ -88,7 +88,10 @@ public class Assessment {
         }
     }
 
-    private void isUnique() { // Invariant 2
+    private void assessmentIsUnique() { // Invariant 2
+        if (this.institution.getAssessments() == null) {
+            return;
+        }
         if (this.institution.getAssessments().stream()
                 .anyMatch(assessment -> assessment != this && assessment.getVolunteer().equals(this.volunteer))) {
             throw new HEException(ASSESSMENT_ALREADY_EXISTS);
@@ -96,7 +99,7 @@ public class Assessment {
     }
 
     private void institutionHasOneCompletedActivity() { // Invariant 3
-        if (this.institution.getActivities().stream()
+        if (this.institution.getActivities() == null || this.institution.getActivities().stream()
                 .noneMatch(activity -> activity.getEndingDate().isBefore(this.reviewDate))) {
             throw new HEException(INSTITUTION_HAS_NO_COMPLETED_ACTIVITIES);
         }

@@ -76,8 +76,6 @@ class CreateAssessmentMethodTest extends SpockTest {
         given:
         activity.getEndingDate() >> deadline
         institution.getActivities() >> [activity]
-        institution.getAssessments() >> [otherAssessment]
-        otherAssessment.getVolunteer() >> otherVolunteer
         and: "an assessment dto"
         assessmentDto = new AssessmentDto()
         assessmentDto.setReview(ASSESSMENT_REVIEW_1)
