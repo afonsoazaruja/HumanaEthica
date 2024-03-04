@@ -12,6 +12,7 @@ import spock.lang.Unroll
 class CreateEnrollmentMethodTest extends SpockTest {
     Volunteer volunteer = Mock()
     Activity activity = Mock()
+    Enrollment otherEnrollment = Mock()
     def enrollmentDto
 
     @Unroll
@@ -30,6 +31,26 @@ class CreateEnrollmentMethodTest extends SpockTest {
 
         where:
         motivation << [null, "", "123456789", "wrong"]
+
+    }
+    @Unroll
+    def "create enrollment and violate invariant enrollment must be unique"() {
+        given:
+        enrollmentDto = new EnrollmentDto()
+        enrollmentDto.setMotivation(ENROLLMENT_MOTIVATION_1)
+        enrollmentDto.setId(ENROLLMENT_ID_1)
+        //enrollmentDto.setEnrollmentDateTime(DateHandler.toISOString(NOW))
+        otherEnrollment.getActivity() >> activity
+
+        and:
+        volunteer.getEnrollments() >> [otherEnrollment]
+
+        when:
+        new Enrollment(activity, volunteer, enrollmentDto)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == ErrorMessage.ENROLLMENT_ALREADY_EXISTS
 
     }
 }
