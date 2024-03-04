@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.crypto.password.PasswordEncoder
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.dto.ActivityDto
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.AssessmentService
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.dto.AssessmentDto
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.repository.AssessmentRepository
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.AuthUserService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.dto.AuthDto
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.dto.AuthPasswordDto
@@ -195,10 +198,6 @@ class SpockTest extends Specification {
     public static final String ACTIVITY_DESCRIPTION_1 = "activity description 1"
     public static final String ACTIVITY_DESCRIPTION_2 = "activity description 2"
 
-    // accessment
-
-    public static final String ASSESSMENT_REVIEW = "assessment review"
-
     @Autowired
     ActivityRepository activityRepository
 
@@ -218,6 +217,23 @@ class SpockTest extends Specification {
         activityDto
     }
 
+    // assessment
+
+    public static final String ASSESSMENT_REVIEW_1 = "assessment review 1"
+    public static final String ASSESSMENT_REVIEW_2 = "assessment review 2"
+
+    @Autowired
+    AssessmentRepository assessmentRepository
+
+    @Autowired
+    AssessmentService assessmentService
+
+    protected AssessmentDto createAssessmentDto(review) {
+        def assessmentDto = new AssessmentDto()
+        assessmentDto.setReview(review)
+        assessmentDto
+    }
+
     // clean database
 
     def deleteAll() {
@@ -227,6 +243,7 @@ class SpockTest extends Specification {
         userRepository.deleteAll()
         institutionRepository.deleteAll()
         themeRepository.deleteAll()
+        assessmentRepository.deleteAll()
     }
 
 
