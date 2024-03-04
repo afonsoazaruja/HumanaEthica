@@ -245,12 +245,10 @@ public class Activity {
 
     public void addEnrollment(Enrollment enrollment) {
         this.enrollments.add(enrollment);
-        enrollment.setActivity(this);
     }
 
     public void removeEnrollment(Enrollment enrollment) {
         this.enrollments.remove(enrollment);
-        enrollment.setActivity(null);
     }
 
     public void setInstitution(Institution institution) {

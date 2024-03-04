@@ -1,10 +1,10 @@
 package pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain;
 
 import jakarta.persistence.*;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.domain.AuthUser;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.domain.Assessment;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.domain.Participation;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.domain.AuthUser;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.domain.Enrollment;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.domain.Participation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class Volunteer extends User {
     @OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Participation> participations = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "volunteer")
     private List<Enrollment> enrollments;
 
     public Volunteer() {
@@ -67,12 +67,10 @@ public class Volunteer extends User {
 
     public void addEnrollment(Enrollment enrollment) {
         this.enrollments.add(enrollment);
-        enrollment.setVolunteer(this);
     }
 
     public void removeEnrollment(Enrollment enrollment) {
         this.enrollments.remove(enrollment);
-        enrollment.setVolunteer(null);
     }
 }
 
