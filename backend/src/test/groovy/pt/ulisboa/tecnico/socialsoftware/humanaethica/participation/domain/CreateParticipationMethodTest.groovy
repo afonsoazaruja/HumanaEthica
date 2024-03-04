@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.domain
 
+import jakarta.activation.DataHandler
+import jakarta.persistence.criteria.CriteriaBuilder
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.BeanConfiguration
@@ -95,6 +97,35 @@ class CreateParticipationMethodTest extends SpockTest {
         then: "check results"
         def error = thrown(HEException)
         error.getErrorMessage() == ErrorMessage.PARTICIPATION_VOLUNTEER_ALREADY_PARTICIPATES
+    }
+
+    @Unroll
+    def "create participation and violate invariant isAfterDeadline, acceptanceDate isBefore ApplicationDeadline"() {
+        given:
+        activity.getName() >> ACTIVITY_NAME_1
+        activity.getRegion() >> ACTIVITY_REGION_1
+        activity.getNumberOfParticipants() >> 1
+        activity.getParticipantsNumberLimit() >> 2
+        activity.getDescription() >> ACTIVITY_DESCRIPTION_1
+        activity.getApplicationDeadline() >> IN_THREE_DAYS
+        volunteer.getName() >> USER_1_NAME
+        and: "a participation dto"
+        participationDto = new ParticipationDto()
+        participationDto.rating = 10
+        participationDto.setAcceptanceDate(date instanceof LocalDateTime ? DateHandler.toISOString(date) : date as String)
+
+        when:
+        new Participation(activity, volunteer, participationDto)
+
+        then: "check results"
+        def error = thrown(HEException)
+        error.getErrorMessage() == errorMessage
+
+        where:
+        date         || errorMessage
+        NOW          || ErrorMessage.ACCEPTANCEDATE_IS_BEFORE_DEADLINE
+        IN_ONE_DAY   || ErrorMessage.ACCEPTANCEDATE_IS_BEFORE_DEADLINE
+        IN_TWO_DAYS  || ErrorMessage.ACCEPTANCEDATE_IS_BEFORE_DEADLINE
     }
 
     @TestConfiguration

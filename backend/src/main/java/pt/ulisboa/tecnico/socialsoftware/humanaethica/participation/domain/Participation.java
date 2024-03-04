@@ -80,7 +80,7 @@ public class Participation {
     private void verifyInvariants() {
         participantsWithinLimit();
         isUnique();
-        isAfterAcceptanceDate();
+        isAfterDeadline();
     }
 
     private void participantsWithinLimit() {
@@ -95,9 +95,9 @@ public class Participation {
         }
     }
 
-    private void isAfterAcceptanceDate() {
+    private void isAfterDeadline() {
         if (this.acceptanceDate.isBefore(activity.getApplicationDeadline())) {
-            throw new HEException(ErrorMessage.PARTICIPATION_IS_BEFORE_ACCEPTANCE_DATE, activity.getApplicationDeadline().toString());
+            throw new HEException(ErrorMessage.ACCEPTANCEDATE_IS_BEFORE_DEADLINE, activity.getApplicationDeadline().toString());
         }
     }
 

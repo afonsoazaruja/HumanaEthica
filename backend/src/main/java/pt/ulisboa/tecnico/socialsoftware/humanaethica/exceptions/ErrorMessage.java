@@ -49,7 +49,7 @@ public enum ErrorMessage {
     // Participation
     PARTICIPATION_TOO_MANY_PARTICIPANTS("Activity has reached it's limit of %d participants"),
     PARTICIPATION_VOLUNTEER_ALREADY_PARTICIPATES("Volunteer %s can only participate once in the activity"),
-    PARTICIPATION_IS_BEFORE_ACCEPTANCE_DATE("Volunteer can only participate after the acceptance date: %s");
+    ACCEPTANCEDATE_IS_BEFORE_DEADLINE("Volunteer can only participate after the activity deadline: %s");
 
     public final String label;
     ErrorMessage(String label) {
