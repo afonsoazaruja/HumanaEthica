@@ -71,6 +71,28 @@ class CreateAssessmentMethodTest extends SpockTest {
         review << [null, "", " ", "123456789"]
     }
 
+    @Unroll
+    def "create assessment and violate institution can only be assessed when it has at least one completed activity : deadline=#deadline"() {
+        given:
+        activity.getEndingDate() >> deadline
+        institution.getActivities() >> [activity]
+        institution.getAssessments() >> [otherAssessment]
+        otherAssessment.getVolunteer() >> otherVolunteer
+        and: "an assessment dto"
+        assessmentDto = new AssessmentDto()
+        assessmentDto.setReview(ASSESSMENT_REVIEW_1)
+
+        when:
+        new Assessment(institution, volunteer, assessmentDto)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == ErrorMessage.INSTITUTION_HAS_NO_COMPLETED_ACTIVITIES
+
+        where:
+        deadline << [IN_ONE_DAY, IN_THREE_DAYS, IN_TWO_DAYS]
+    }
+
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }
