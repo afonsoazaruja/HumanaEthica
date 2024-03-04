@@ -34,7 +34,7 @@ public class Enrollment {
 
     public Enrollment(Activity activity, Volunteer volunteer, EnrollmentDto enrollmentDto) {
         setMotivation(enrollmentDto.getMotivation());
-        setEnrollmentDateTime(DateHandler.toLocalDateTime(enrollmentDto.getEnrollmentDateTime()));
+        setEnrollmentDateTime(DateHandler.now());
         setActivity(activity);
         setVolunteer(volunteer);
 
@@ -63,10 +63,12 @@ public class Enrollment {
 
     public void setVolunteer(Volunteer volunteer) {
         this.volunteer = volunteer;
+        volunteer.addEnrollment(this);
     }
 
     public void setActivity(Activity activity) {
         this.activity = activity;
+        activity.addEnrollment(this);
     }
 
     public void setMotivation(String motivation) {
