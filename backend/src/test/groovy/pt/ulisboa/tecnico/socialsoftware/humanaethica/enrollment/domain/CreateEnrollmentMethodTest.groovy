@@ -10,17 +10,25 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 import spock.lang.Unroll
 
 class CreateEnrollmentMethodTest extends SpockTest {
+    
     Volunteer volunteer = Mock()
     Activity activity = Mock()
     Enrollment otherEnrollment = Mock()
+
     def enrollmentDto
+
+    def setup() {
+        enrollmentDto = new EnrollmentDto()
+        enrollmentDto.setMotivation(ENROLLMENT_MOTIVATION_1)
+    }
 
     @Unroll
     def "create enrollment and violate invariant motivation must have at least 10 characters"() {
-        given:
-        enrollmentDto = new EnrollmentDto()
+        given: "avoid exception on invariant 2"
+        volunteer.getEnrollments() >> []
+
+        and:
         enrollmentDto.setMotivation(motivation)
-        enrollmentDto.setEnrollmentDateTime(DateHandler.toISOString(NOW))
 
         when:
         new Enrollment(activity, volunteer, enrollmentDto)
@@ -36,10 +44,6 @@ class CreateEnrollmentMethodTest extends SpockTest {
     @Unroll
     def "create enrollment and violate invariant enrollment must be unique"() {
         given:
-        enrollmentDto = new EnrollmentDto()
-        enrollmentDto.setMotivation(ENROLLMENT_MOTIVATION_1)
-        enrollmentDto.setId(ENROLLMENT_ID_1)
-        //enrollmentDto.setEnrollmentDateTime(DateHandler.toISOString(NOW))
         otherEnrollment.getActivity() >> activity
 
         and:
@@ -51,6 +55,24 @@ class CreateEnrollmentMethodTest extends SpockTest {
         then:
         def error = thrown(HEException)
         error.getErrorMessage() == ErrorMessage.ENROLLMENT_ALREADY_EXISTS
+    }
 
+    @Unroll
+    def "create enrollment and violate invariant apply before deadline"() {
+        given: "avoid exception on invariant 2"
+        volunteer.getEnrollments() >> []
+
+        and:
+        activity.getApplicationDeadline() >> days
+
+        when:
+        new Enrollment(activity, volunteer, enrollmentDto)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == ErrorMessage.ENROLLMENT_AFTER_DEADLINE
+
+        where:
+        days << [ONE_DAY_AGO, TWO_DAYS_AGO]
     }
 }
