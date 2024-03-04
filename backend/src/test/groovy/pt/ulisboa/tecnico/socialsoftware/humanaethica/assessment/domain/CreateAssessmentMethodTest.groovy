@@ -71,6 +71,25 @@ class CreateAssessmentMethodTest extends SpockTest {
         review << [null, "", " ", "123456789"]
     }
 
+    def "create assessment violate unique institution for volunteer"() {
+        given:
+        activity.getEndingDate() >> TWO_DAYS_AGO
+        institution.getActivities() >> [activity]
+        otherAssessment.getVolunteer() >> otherVolunteer
+        otherAssessment.getInstitution() >> institution
+        institution.getAssessments() >> [otherAssessment]
+        and: "an assessment dto"
+        assessmentDto = new AssessmentDto()
+        assessmentDto.setReview(ASSESSMENT_REVIEW_1)
+
+        when:
+        Assessment result = new Assessment(institution, otherVolunteer, assessmentDto)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == ErrorMessage.VOLUNTEER_ALREADY_MADE_ASSESSMENT_FOR_INSTITUTION
+    }
+
     @Unroll
     def "create assessment and violate institution can only be assessed when it has at least one completed activity : deadline=#deadline"() {
         given:

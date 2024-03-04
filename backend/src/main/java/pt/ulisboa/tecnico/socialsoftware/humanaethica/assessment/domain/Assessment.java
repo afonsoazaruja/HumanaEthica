@@ -94,7 +94,7 @@ public class Assessment {
         }
         if (this.institution.getAssessments().stream()
                 .anyMatch(assessment -> assessment != this && assessment.getVolunteer().equals(this.volunteer))) {
-            throw new HEException(ASSESSMENT_ALREADY_EXISTS);
+            throw new HEException(VOLUNTEER_ALREADY_MADE_ASSESSMENT_FOR_INSTITUTION);
         }
     }
 

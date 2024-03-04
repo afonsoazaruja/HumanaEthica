@@ -43,11 +43,10 @@ public enum ErrorMessage {
 
     // Assessment
     ASSESSMENT_INVALID_REVIEW("Assessment Review: %s, is not valid"),
-    ASSESSMENT_ALREADY_EXISTS("Assessment already exists in database"),
+    VOLUNTEER_ALREADY_MADE_ASSESSMENT_FOR_INSTITUTION("Volunteer already made an assessment for the institution"),
     INSTITUTION_HAS_NO_COMPLETED_ACTIVITIES("Institution has no completed activities");
 
     public final String label;
-
     ErrorMessage(String label) {
         this.label = label;
     }
