@@ -49,26 +49,22 @@ public class Enrollment {
         return volunteer;
     }
 
-    public Activity getActivity() {
-        return activity;
-    }
-
-    public String getMotivation() {
-        return motivation;
-    }
-
-    public LocalDateTime getDateTime() {
-        return enrollmentDateTime;
-    }
-
     public void setVolunteer(Volunteer volunteer) {
         this.volunteer = volunteer;
         volunteer.addEnrollment(this);
     }
 
+    public Activity getActivity() {
+        return activity;
+    }
+
     public void setActivity(Activity activity) {
         this.activity = activity;
         activity.addEnrollment(this);
+    }
+
+    public String getMotivation() {
+        return motivation;
     }
 
     public void setMotivation(String motivation) {
