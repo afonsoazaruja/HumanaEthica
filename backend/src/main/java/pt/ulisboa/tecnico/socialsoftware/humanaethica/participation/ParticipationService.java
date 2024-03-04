@@ -16,7 +16,7 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.dto.Particip
 
 import java.util.List;
 
-import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.USER_NOT_FOUND;
+import static pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage.ACTIVITY_NOT_FOUND;
 
 @Service
 public class ParticipationService {
@@ -37,8 +37,8 @@ public class ParticipationService {
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public ParticipationDto createParticipatiom(Integer activityId, ParticipationDto participationDto){
-        if (activityId == null) throw new HEException(USER_NOT_FOUND);
-        Activity activity = (Activity) activityRepository.findById(activityId).orElseThrow(() -> new HEException(USER_NOT_FOUND, activityId));
+        if (activityId == null) throw new HEException(ACTIVITY_NOT_FOUND);
+        Activity activity = (Activity) activityRepository.findById(activityId).orElseThrow(() -> new HEException(ACTIVITY_NOT_FOUND, activityId));
         Volunteer volunteer = participationDto.getVolunteer();
 
         Participation participation = new Participation(activity,volunteer,participationDto);
