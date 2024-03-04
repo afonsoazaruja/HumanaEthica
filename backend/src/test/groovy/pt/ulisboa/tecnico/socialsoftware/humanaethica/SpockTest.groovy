@@ -58,6 +58,12 @@ class SpockTest extends Specification {
     public static final String INSTITUTION_1_NAME = "institution1"
     public static final String INSTITUTION_1_NIF = "123456789"
 
+    // enrollment
+
+    public static final String ENROLLMENT_MOTIVATION_1 = "valid motivation 1"
+    public static final Integer ENROLLMENT_ID_1 = "1"
+
+
     @Autowired
     InstitutionService institutionService
 
