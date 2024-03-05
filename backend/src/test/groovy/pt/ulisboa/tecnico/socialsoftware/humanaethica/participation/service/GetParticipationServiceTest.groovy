@@ -6,6 +6,8 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.BeanConfiguration
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.domain.AuthUser
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.domain.Participation
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.domain.Theme
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.User
@@ -13,10 +15,13 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 
 @DataJpaTest
-class GetParticipationServiceTest extends SpockTest{
-    def activityId
+class GetParticipationServiceTest extends SpockTest {
+    public static final Integer NO_EXIST = 222
+
+    def activity
     def participation1
     def participation2
+
     def setup() {
         def institution = institutionService.getDemoInstitution()
         given: "activity info"
@@ -26,9 +31,8 @@ class GetParticipationServiceTest extends SpockTest{
         def themes = new ArrayList<>()
         themes.add(createTheme(THEME_NAME_1, Theme.State.APPROVED,null))
         and: "an activity"
-        def activity = new Activity(activityDto, institution, themes)
+        activity = new Activity(activityDto, institution, themes)
         activityRepository.save(activity)
-        activityId = activity.getId()
         and: "a volunteer"
         def volunteer1 = new Volunteer(USER_1_NAME, USER_1_USERNAME, USER_1_EMAIL, AuthUser.Type.NORMAL, User.State.SUBMITTED)
         userRepository.save(volunteer1)
@@ -45,21 +49,37 @@ class GetParticipationServiceTest extends SpockTest{
         participationRepository.save(participation2)
     }
 
-    def "register participation"() {
-        when: "get participations"
-        def result = participationService.getParticipationsByActivity(activityId)
+    def "get two participations"() {
+        when:
+        def result = participationService.getParticipationsByActivity(activity.getId())
 
         then: "check results"
         result.size() == 2
-        result.get(0).activity.getId() == activityId
+        result.get(0).activity.getId() == activity.getId()
         result.get(0).volunteer.getName() == USER_1_NAME
         result.get(0).rating == RATING_10
         result.get(0).acceptanceDate == DateHandler.toISOString(participation1.getAcceptanceDate())
 
-        result.get(1).activity.getId() == activityId
+        result.get(1).activity.getId() == activity.getId()
         result.get(1).volunteer.getName() == USER_2_NAME
         result.get(1).rating == RATING_1
         result.get(1).acceptanceDate == DateHandler.toISOString(participation2.getAcceptanceDate())
+    }
+
+    def "invalid arguments: activityId=#activityId"() {
+        when:
+        participationService.getParticipationsByActivity(activityId)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == errorMessage
+        and: "2 participations exist"
+        participationRepository.findAll().size() == 2
+
+        where:
+        activityId || errorMessage
+        NO_EXIST   || ErrorMessage.ACTIVITY_NOT_FOUND
+        null       || ErrorMessage.ACTIVITY_NOT_FOUND
     }
 
     @TestConfiguration
