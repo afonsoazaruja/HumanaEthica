@@ -90,7 +90,11 @@ public class Participation {
     }
 
     private void isUnique() {
-        if (volunteer.verifyParticipation(this)) {
+        if (this.volunteer.getParticipations() == null){
+            return;
+        }
+        if (this.volunteer.getParticipations().stream()
+                .anyMatch(participation -> participation != this && participation.getVolunteer().equals(this.volunteer))) {
             throw new HEException(ErrorMessage.PARTICIPATION_VOLUNTEER_ALREADY_PARTICIPATES, volunteer.getName());
         }
     }

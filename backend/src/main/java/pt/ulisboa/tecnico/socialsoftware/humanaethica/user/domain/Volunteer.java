@@ -49,9 +49,8 @@ public class Volunteer extends User {
         participations.remove(participation);
     }
 
-    public boolean verifyParticipation(Participation participation) {
-        return participations.stream()
-                .anyMatch(p -> p.getActivity().equals(participation.getActivity()));
+    public List<Participation> getParticipations() {
+        return participations;
     }
 }
 
