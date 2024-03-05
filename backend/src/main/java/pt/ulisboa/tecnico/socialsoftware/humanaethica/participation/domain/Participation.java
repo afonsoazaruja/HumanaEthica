@@ -94,7 +94,9 @@ public class Participation {
             return;
         }
         if (this.volunteer.getParticipations().stream()
-                .anyMatch(participation -> participation != this && participation.getVolunteer().equals(this.volunteer))) {
+                .anyMatch(participation -> participation != this
+                        && participation.getActivity().equals(this.activity)
+                        && participation.getVolunteer().equals(this.volunteer))) {
             throw new HEException(ErrorMessage.PARTICIPATION_VOLUNTEER_ALREADY_PARTICIPATES, volunteer.getName());
         }
     }
