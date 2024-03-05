@@ -31,6 +31,8 @@ public class ParticipationService {
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public List<ParticipationDto> getParticipationsByActivity(Integer activityId) {
+        if (activityId == null) throw new HEException(ACTIVITY_NOT_FOUND);
+        if (!activityRepository.existsById(activityId)) throw new HEException(ACTIVITY_NOT_FOUND, activityId);
         return participationRepository.getParticipationByActivityId(activityId)
                 .stream()
                 .map(ParticipationDto::new)
