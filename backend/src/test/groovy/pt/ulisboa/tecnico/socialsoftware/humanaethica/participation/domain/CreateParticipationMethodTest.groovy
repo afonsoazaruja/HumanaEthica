@@ -85,8 +85,9 @@ class CreateParticipationMethodTest extends SpockTest {
         activity.getParticipantsNumberLimit() >> 2
         activity.getDescription() >> ACTIVITY_DESCRIPTION_1
         activity.getApplicationDeadline() >> ONE_DAY_AGO
+        otherParticipation.getVolunteer() >> volunteer
         volunteer.getName() >> USER_1_NAME
-        volunteer.verifyParticipation(_) >> true
+        volunteer.getParticipations() >> [otherParticipation]
         and: "a participation dto"
         participationDto = new ParticipationDto()
         participationDto.rating = 10
