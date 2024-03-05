@@ -83,7 +83,7 @@ class CreateAssessmentMethodTest extends SpockTest {
         assessmentDto.setReview(ASSESSMENT_REVIEW_1)
 
         when:
-        Assessment result = new Assessment(institution, otherVolunteer, assessmentDto)
+        new Assessment(institution, otherVolunteer, assessmentDto)
 
         then:
         def error = thrown(HEException)

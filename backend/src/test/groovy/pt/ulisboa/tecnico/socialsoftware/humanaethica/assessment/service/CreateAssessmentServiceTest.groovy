@@ -5,26 +5,33 @@ import org.springframework.boot.test.context.TestConfiguration
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.BeanConfiguration
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.AssessmentService
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.domain.Assessment
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.domain.Theme
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.User
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
+import spock.lang.Unroll
 
 @DataJpaTest
-class CreateAssessmentServiceTest extends SpockTest{
+class CreateAssessmentServiceTest extends SpockTest {
+    public static final String EXIST = "exist"
+    public static final String NO_EXIST = "noExist"
+    def volunteer
+    def institution
+    def assessmentDto
+
+    def setup() {
+        volunteer = authUserService.loginDemoVolunteerAuth().getUser()
+        institution = institutionService.getDemoInstitution()
+        assessmentDto = createAssessmentDto(ASSESSMENT_REVIEW_1)
+    }
 
     def "create assessment"() {
         given: "an assessment dto"
-        def volunteer = authUserService.loginDemoVolunteerAuth().getUser()
-        def institution = institutionService.getDemoInstitution()
         def activityDto = createActivityDto(ACTIVITY_NAME_1,ACTIVITY_REGION_1,1,ACTIVITY_DESCRIPTION_1,
                 DateHandler.now().minusDays(3),TWO_DAYS_AGO,ONE_DAY_AGO,null)
         def themes = new ArrayList<>()
         themes.add(createTheme(THEME_NAME_1, Theme.State.APPROVED,null))
         def activity = new Activity(activityDto, institution, themes)
-        def assessmentDto = createAssessmentDto(ASSESSMENT_REVIEW_1)
         when:
         def result = assessmentService.createAssessment(volunteer.getId(), institution.getId(), assessmentDto)
 
@@ -35,6 +42,42 @@ class CreateAssessmentServiceTest extends SpockTest{
         and: "the stored data is correct"
         def storedAssessment = assessmentRepository.findById(result.id).get()
         storedAssessment.review == ASSESSMENT_REVIEW_1
+    }
+
+    @Unroll
+    def 'invalid arguments: volunteerId=#volunteerId | institutionId=#institutionId'() {
+        given:
+        def assessmentDto = createAssessmentDto(ASSESSMENT_REVIEW_1)
+
+        when:
+        assessmentService.createAssessment(getVolunteerId(volunteerId), getInstitutionId(institutionId), assessmentDto)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == errorMessage
+
+        where:
+        volunteerId     | institutionId   || errorMessage
+        null            | EXIST           || ErrorMessage.USER_NOT_FOUND
+        NO_EXIST        | EXIST           || ErrorMessage.USER_NOT_FOUND
+        EXIST           | null            || ErrorMessage.INSTITUTION_NOT_FOUND
+        EXIST           | NO_EXIST        || ErrorMessage.INSTITUTION_NOT_FOUND
+    }
+
+    def getVolunteerId(volunteerId){
+        if (volunteerId == EXIST)
+            return volunteer.id
+        else if (volunteerId == NO_EXIST)
+            return 222
+        return null
+    }
+
+    def getInstitutionId(institutionId){
+        if (institutionId == EXIST)
+            return institution.id
+        else if (institutionId == NO_EXIST)
+            return 222
+        return null
     }
 
     @TestConfiguration
