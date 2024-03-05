@@ -14,7 +14,7 @@ import java.util.Set;
 @Transactional
 public interface ParticipationRepository extends JpaRepository<Participation, Integer> {
     @Query("SELECT p FROM Participation p WHERE p.activity.id = :activityId")
-    List<Participation> getParticipationById(Integer activityId);
+    List<Participation> getParticipationByActivityId(Integer activityId);
 
     @Modifying
     @Query(value = "DELETE FROM activity_participation", nativeQuery = true)

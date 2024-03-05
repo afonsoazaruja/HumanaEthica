@@ -29,7 +29,7 @@ public class ParticipationService {
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public List<ParticipationDto> getParticipationsByActivity(Integer activityId) {
-        return participationRepository.getParticipationById(activityId)
+        return participationRepository.getParticipationByActivityId(activityId)
                 .stream()
                 .map(ParticipationDto::new)
                 .toList();
