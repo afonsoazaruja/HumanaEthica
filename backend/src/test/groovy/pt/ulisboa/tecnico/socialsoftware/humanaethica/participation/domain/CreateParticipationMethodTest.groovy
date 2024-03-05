@@ -86,6 +86,7 @@ class CreateParticipationMethodTest extends SpockTest {
         activity.getDescription() >> ACTIVITY_DESCRIPTION_1
         activity.getApplicationDeadline() >> ONE_DAY_AGO
         otherParticipation.getVolunteer() >> volunteer
+        otherParticipation.getActivity() >> activity
         volunteer.getName() >> USER_1_NAME
         volunteer.getParticipations() >> [otherParticipation]
         and: "a participation dto"
