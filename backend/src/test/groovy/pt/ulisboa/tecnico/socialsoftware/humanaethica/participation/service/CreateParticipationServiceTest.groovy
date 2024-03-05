@@ -5,10 +5,17 @@ import org.springframework.boot.test.context.TestConfiguration
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.BeanConfiguration
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.domain.Theme
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer
+import spock.lang.Unroll
 
 @DataJpaTest
 class CreateParticipationServiceTest extends SpockTest {
+    public static final String EXIST = "exist"
+    public static final String NO_EXIST = "noExist"
+
 
     def volunteer
     def activityId
@@ -26,7 +33,7 @@ class CreateParticipationServiceTest extends SpockTest {
     }
 
     def "create participation"(){
-        given: "participation info"
+        given: "an participation dto"
         def participationDto = createParticipationDto(RATING_10)
 
         when:
@@ -47,6 +54,45 @@ class CreateParticipationServiceTest extends SpockTest {
         storedParticipation.acceptanceDate != null
 
     }
+
+    @Unroll
+    def 'invalid arguments: IDactivity=#IDactivity | volunteerId=#volunteerId'(){
+        given: "an participation dto"
+        def participationDto = createParticipationDto(RATING_1)
+
+        when:
+        participationService.createParticipation(getActivityId(IDactivity), getVolunteerId(volunteerId), participationDto)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == errorMessage
+        and: "no participation is stored in the database"
+        participationRepository.findAll().size() == 0
+
+        where:
+        IDactivity | volunteerId || errorMessage
+        NO_EXIST   | EXIST       || ErrorMessage.ACTIVITY_NOT_FOUND
+        null       | EXIST       || ErrorMessage.ACTIVITY_NOT_FOUND
+        EXIST      | NO_EXIST    || ErrorMessage.USER_NOT_FOUND
+        EXIST      | null        || ErrorMessage.USER_NOT_FOUND
+    }
+
+    def getActivityId(IDactivity){
+        if(IDactivity == EXIST)
+            return activityId
+        else if(IDactivity == NO_EXIST)
+            return 222
+        return null
+    }
+
+    def getVolunteerId(volunteerId){
+        if(volunteerId == EXIST)
+            return volunteer.id
+        else if (volunteerId == NO_EXIST)
+            return 222
+        return null
+    }
+
 
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
