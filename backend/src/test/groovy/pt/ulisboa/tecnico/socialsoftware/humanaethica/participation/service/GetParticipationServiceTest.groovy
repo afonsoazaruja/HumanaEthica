@@ -16,7 +16,7 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 
 @DataJpaTest
 class GetParticipationServiceTest extends SpockTest {
-    public static final Integer NO_EXIST = 222
+    public static final Integer NO_EXIST = -1
 
     def activity
     def participation1
