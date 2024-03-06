@@ -20,7 +20,7 @@ public class Volunteer extends User {
     private List<Participation> participations = new ArrayList<>();
 
     @OneToMany(mappedBy = "volunteer")
-    private List<Enrollment> enrollments;
+    private List<Enrollment> enrollments = new ArrayList<>();
 
     public Volunteer() {
     }

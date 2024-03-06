@@ -1,14 +1,16 @@
 package pt.ulisboa.tecnico.socialsoftware.humanaethica
 
-import org.springframework.http.HttpHeaders
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpHeaders
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.web.reactive.function.client.WebClient
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.ActivityService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.dto.ActivityDto
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.AssessmentService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.dto.AssessmentDto
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.repository.AssessmentRepository
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.repository.ActivityRepository
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.AuthUserService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.dto.AuthDto
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.dto.AuthPasswordDto
@@ -18,19 +20,18 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.demo.DemoUtils
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.ParticipationService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.dto.ParticipationDto
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.repository.ParticipationRepository
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.EnrollmentService
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.repository.EnrollmentRepository
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.InstitutionService
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.repository.InstitutionRepository
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.ThemeService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.domain.Theme
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.repository.ThemeRepository
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.UserApplicationalService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.UserService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Member
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.dto.UserDto
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.repository.UserRepository
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.InstitutionService
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.repository.InstitutionRepository
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.repository.ActivityRepository
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.ActivityService
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.repository.ThemeRepository
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.ThemeService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.Mailer
 import spock.lang.Specification
@@ -65,11 +66,6 @@ class SpockTest extends Specification {
     public static final String INSTITUTION_1_EMAIL = "institution1@mail.com"
     public static final String INSTITUTION_1_NAME = "institution1"
     public static final String INSTITUTION_1_NIF = "123456789"
-
-    // enrollment
-
-    public static final String ENROLLMENT_MOTIVATION_1 = "valid motivation 1"
-    public static final Integer ENROLLMENT_ID_1 = "1"
 
 
     @Autowired
@@ -117,7 +113,7 @@ class SpockTest extends Specification {
     PasswordEncoder passwordEncoder
 
     @Autowired
-    DemoService demoService;
+    DemoService demoService
 
     @Autowired
     DemoUtils demoUtils
@@ -180,6 +176,12 @@ class SpockTest extends Specification {
         member.getAuthUser().setPassword(passwordEncoder.encode(password))
         userRepository.save(member)
         return member
+    }
+
+    def createVolunteer(name, userName, email, type, state) {
+        def volunteer = new Volunteer(name, userName, email, type, state)
+        userRepository.save(volunteer)
+        return volunteer
     }
 
     // theme
@@ -262,6 +264,18 @@ class SpockTest extends Specification {
         participationDto.setVolunteerId(volunteerId)
         participationDto
     }
+
+    // enrollment
+
+    public static final Integer ENROLLMENT_ID_1 = 1
+    public static final String ENROLLMENT_MOTIVATION_1 = "enrollment motivation 1"
+    public static final String ENROLLMENT_MOTIVATION_2 = "enrollment motivation 2"
+
+    @Autowired
+    EnrollmentRepository enrollmentRepository
+
+    @Autowired
+    EnrollmentService enrollmentService
 
     // clean database
 

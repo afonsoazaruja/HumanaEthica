@@ -44,7 +44,7 @@ public class Activity {
     private List<Theme> themes = new ArrayList<>();
 
     @OneToMany(mappedBy = "activity")
-    private List<Enrollment> enrollments;
+    private List<Enrollment> enrollments = new ArrayList<>();
 
     @ManyToOne
     private Institution institution;
