@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.humanaethica.participation;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.dto.ParticipationDto;
@@ -19,5 +20,10 @@ public class ParticipationController {
     @GetMapping("/{activityId}")
     public List<ParticipationDto> getActivityParticipations(@PathVariable Integer activityId) {
         return participationService.getParticipationsByActivity(activityId);
+    }
+
+    @PostMapping("/{activityId}")
+    public ParticipationDto createParticipation(@PathVariable Integer activityId, @Valid @RequestBody ParticipationDto participationDto){
+        return participationService.createParticipation(activityId, participationDto);
     }
 }

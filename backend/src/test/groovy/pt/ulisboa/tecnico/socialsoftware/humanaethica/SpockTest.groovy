@@ -22,6 +22,8 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.domain.Theme
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.UserApplicationalService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.UserService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Member
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.dto.UserDto
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.repository.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.InstitutionService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.repository.InstitutionRepository
@@ -248,9 +250,10 @@ class SpockTest extends Specification {
     @Autowired
     ParticipationRepository participationRepository
 
-    protected ParticipationDto createParticipationDto(rating) {
+    protected ParticipationDto createParticipationDto(rating, volunteerId) {
         def participationDto = new ParticipationDto()
         participationDto.setRating(rating)
+        participationDto.setVolunteerId(volunteerId)
         participationDto
     }
 
