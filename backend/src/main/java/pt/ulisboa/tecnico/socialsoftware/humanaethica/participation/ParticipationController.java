@@ -17,12 +17,12 @@ public class ParticipationController {
 
     public static final Logger logger = LoggerFactory.getLogger(ParticipationController.class);
 
-    @GetMapping("/{activityId}")
+    @GetMapping("/{activityId}/get")
     public List<ParticipationDto> getActivityParticipations(@PathVariable Integer activityId) {
         return participationService.getParticipationsByActivity(activityId);
     }
 
-    @PostMapping("/{activityId}")
+    @PostMapping("/{activityId}/create")
     public ParticipationDto createParticipation(@PathVariable Integer activityId, @Valid @RequestBody ParticipationDto participationDto){
         return participationService.createParticipation(activityId, participationDto);
     }
