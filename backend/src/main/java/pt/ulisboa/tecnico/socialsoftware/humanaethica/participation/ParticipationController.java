@@ -19,6 +19,7 @@ public class ParticipationController {
     public static final Logger logger = LoggerFactory.getLogger(ParticipationController.class);
 
     @GetMapping("/{activityId}/get")
+    @PreAuthorize("hasRole('ROLE_MEMBER') and hasPermission(#activityId, 'ACTIVITY.MEMBER')")
     public List<ParticipationDto> getActivityParticipations(@PathVariable Integer activityId) {
         return participationService.getParticipationsByActivity(activityId);
     }
