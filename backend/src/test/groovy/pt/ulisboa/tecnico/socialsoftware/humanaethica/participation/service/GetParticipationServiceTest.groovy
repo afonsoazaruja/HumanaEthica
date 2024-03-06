@@ -21,6 +21,8 @@ class GetParticipationServiceTest extends SpockTest {
     def activity
     def participation1
     def participation2
+    def volunteerId1
+    def volunteerId2
 
     def setup() {
         def institution = institutionService.getDemoInstitution()
@@ -36,15 +38,18 @@ class GetParticipationServiceTest extends SpockTest {
         and: "a volunteer"
         def volunteer1 = new Volunteer(USER_1_NAME, USER_1_USERNAME, USER_1_EMAIL, AuthUser.Type.NORMAL, User.State.SUBMITTED)
         userRepository.save(volunteer1)
+        volunteerId1 = volunteer1.getId()
         and: "another volunteer"
         def volunteer2= new Volunteer(USER_2_NAME, USER_2_USERNAME, USER_2_EMAIL, AuthUser.Type.NORMAL, User.State.SUBMITTED)
         userRepository.save(volunteer2)
+        volunteerId2 = volunteer2.getId()
         and: "a participation"
-        def participationDto = createParticipationDto(RATING_10)
+        def participationDto = createParticipationDto(RATING_10, volunteerId1)
         participation1 = new Participation(activity, volunteer1, participationDto)
         participationRepository.save(participation1)
         and: "another participation"
         participationDto.setRating(RATING_1)
+        participationDto.setVolunteerId(volunteerId2)
         participation2 = new Participation(activity, volunteer2, participationDto)
         participationRepository.save(participation2)
     }
@@ -56,12 +61,12 @@ class GetParticipationServiceTest extends SpockTest {
         then: "check results"
         result.size() == 2
         result.get(0).activity.getId() == activity.getId()
-        result.get(0).volunteer.getName() == USER_1_NAME
+        result.get(0).getVolunteerId() == volunteerId1
         result.get(0).rating == RATING_10
         result.get(0).acceptanceDate == DateHandler.toISOString(participation1.getAcceptanceDate())
 
         result.get(1).activity.getId() == activity.getId()
-        result.get(1).volunteer.getName() == USER_2_NAME
+        result.get(1).getVolunteerId() == volunteerId2
         result.get(1).rating == RATING_1
         result.get(1).acceptanceDate == DateHandler.toISOString(participation2.getAcceptanceDate())
     }
