@@ -28,7 +28,7 @@ public class EnrollmentService {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public List<EnrollmentDto> getEnrollmentsByActivity(Integer activityId) {
         if (activityId == null) throw new HEException(ErrorMessage.ACTIVITY_NOT_FOUND);
-
+        if (!activityRepository.existsById(activityId)) throw new HEException(ErrorMessage.ACTIVITY_NOT_FOUND,activityId);
         return enrollmentRepository.getEnrollmentsByActivity(activityId).stream()
                 .map(EnrollmentDto::new)
                 .toList();
