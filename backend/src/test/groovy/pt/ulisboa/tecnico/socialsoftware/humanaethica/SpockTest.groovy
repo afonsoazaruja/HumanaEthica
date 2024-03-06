@@ -15,6 +15,8 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.repository.AuthUserRe
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.demo.DemoService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.demo.DemoUtils
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.EnrollmentService
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.domain.Enrollment
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.dto.EnrollmentDto
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.repository.EnrollmentRepository
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.InstitutionService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.repository.InstitutionRepository
@@ -229,12 +231,21 @@ class SpockTest extends Specification {
     public static final Integer ENROLLMENT_ID_1 = 1
     public static final String ENROLLMENT_MOTIVATION_1 = "enrollment motivation 1"
     public static final String ENROLLMENT_MOTIVATION_2 = "enrollment motivation 2"
+    public static final String ENROLLMENT_DATE_TIME_NOW = "NOW"
 
     @Autowired
     EnrollmentRepository enrollmentRepository
 
     @Autowired
     EnrollmentService enrollmentService
+
+    protected EnrollmentDto createEnrollmentDto(id, motivation, date) {
+        def enrollmentDto = new EnrollmentDto()
+        enrollmentDto.setId(id)
+        enrollmentDto.setMotivation(motivation)
+        enrollmentDto.setEnrollmentDateTime(date)
+        enrollmentDto
+    }
 
     // clean database
 
