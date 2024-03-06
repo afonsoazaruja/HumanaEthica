@@ -2,8 +2,10 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.dto;
 
 import jakarta.activation.DataHandler;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.dto.ActivityDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.domain.Participation;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.dto.UserDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
 
 import java.time.LocalDateTime;
@@ -12,8 +14,8 @@ public class ParticipationDto {
     private Integer id;
     private Integer rating;
     private String acceptanceDate;
-    private Activity activity;
-    private Volunteer volunteer;
+    private ActivityDto activity;
+    private UserDto volunteer;
 
 
     public ParticipationDto() {
@@ -23,8 +25,8 @@ public class ParticipationDto {
         setId(participation.getId());
         setRating(participation.getRating());
         setAcceptanceDate(DateHandler.toISOString(participation.getAcceptanceDate()));
-        setActivity(participation.getActivity());
-        setVolunteer(participation.getVolunteer());
+        setActivity(new ActivityDto(participation.getActivity(), true));
+        setVolunteer(new UserDto(participation.getVolunteer()));
     }
 
 
@@ -52,19 +54,19 @@ public class ParticipationDto {
         this.acceptanceDate = acceptanceDate;
     }
 
-    public Activity getActivity() {
+    public ActivityDto getActivity() {
         return activity;
     }
 
-    public void setActivity(Activity activity) {
+    public void setActivity(ActivityDto activity) {
         this.activity = activity;
     }
 
-    public Volunteer getVolunteer() {
+    public UserDto getVolunteer() {
         return volunteer;
     }
 
-    public void setVolunteer(Volunteer volunteer) {
+    public void setVolunteer(UserDto volunteer) {
         this.volunteer = volunteer;
     }
 
