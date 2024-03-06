@@ -17,11 +17,11 @@ class CreateParticipationServiceTest extends SpockTest {
     public static final String NO_EXIST = "noExist"
 
 
-    def volunteer
+    def volunteerId
     def activityId
 
     def setup() {
-        volunteer = authUserService.loginDemoVolunteerAuth().getUser()
+        volunteerId = authUserService.loginDemoVolunteerAuth().getUser().getId()
         def institution = institutionService.getDemoInstitution()
         def activityDto = createActivityDto(ACTIVITY_NAME_1,ACTIVITY_REGION_1,2,ACTIVITY_DESCRIPTION_1,
                 ONE_DAY_AGO,IN_TWO_DAYS,IN_THREE_DAYS,null)
@@ -34,34 +34,34 @@ class CreateParticipationServiceTest extends SpockTest {
 
     def "create participation"(){
         given: "an participation dto"
-        def participationDto = createParticipationDto(RATING_10)
+        def participationDto = createParticipationDto(RATING_10, volunteerId)
 
         when:
-        def result = participationService.createParticipation(activityId, volunteer.getId(), participationDto)
+        def result = participationService.createParticipation(activityId, participationDto)
 
         then: "the returned data is correct"
         result.activity.getId() == activityId
-        result.volunteer.getName() == volunteer.getName()
         result.rating == RATING_10
+        result.getVolunteerId() == volunteerId
         result.acceptanceDate != null
         and: "the activity is saved in the database"
         participationRepository.findAll().size() == 1
         and: "the stored data is correct"
         def storedParticipation = participationRepository.getParticipationByActivityId(activityId).get(0)
         storedParticipation.activity.id == activityId
-        storedParticipation.volunteer.name == volunteer.getName()
         storedParticipation.rating == RATING_10
+        storedParticipation.getVolunteer().getId() == volunteerId
         storedParticipation.acceptanceDate != null
 
     }
 
     @Unroll
-    def 'invalid arguments: IDactivity=#IDactivity | volunteerId=#volunteerId'(){
+    def 'invalid arguments: IDactivity=#IDactivity | volunteerId=#IDvolunteer'(){
         given: "an participation dto"
-        def participationDto = createParticipationDto(RATING_1)
+        def participationDto = createParticipationDto(RATING_1, getVolunteerId(IDvolunteer))
 
         when:
-        participationService.createParticipation(getActivityId(IDactivity), getVolunteerId(volunteerId), participationDto)
+        participationService.createParticipation(getActivityId(IDactivity), participationDto)
 
         then:
         def error = thrown(HEException)
@@ -70,7 +70,7 @@ class CreateParticipationServiceTest extends SpockTest {
         participationRepository.findAll().size() == 0
 
         where:
-        IDactivity | volunteerId || errorMessage
+        IDactivity | IDvolunteer || errorMessage
         NO_EXIST   | EXIST       || ErrorMessage.ACTIVITY_NOT_FOUND
         null       | EXIST       || ErrorMessage.ACTIVITY_NOT_FOUND
         EXIST      | NO_EXIST    || ErrorMessage.USER_NOT_FOUND
@@ -85,10 +85,10 @@ class CreateParticipationServiceTest extends SpockTest {
         return null
     }
 
-    def getVolunteerId(volunteerId){
-        if(volunteerId == EXIST)
-            return volunteer.id
-        else if (volunteerId == NO_EXIST)
+    def getVolunteerId(IDvolunteer){
+        if(IDvolunteer == EXIST)
+            return volunteerId
+        else if (IDvolunteer == NO_EXIST)
             return 222
         return null
     }

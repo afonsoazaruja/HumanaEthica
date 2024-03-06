@@ -15,7 +15,7 @@ public class ParticipationDto {
     private Integer rating;
     private String acceptanceDate;
     private ActivityDto activity;
-    private UserDto volunteer;
+    private Integer volunteerId;
 
 
     public ParticipationDto() {
@@ -26,7 +26,7 @@ public class ParticipationDto {
         setRating(participation.getRating());
         setAcceptanceDate(DateHandler.toISOString(participation.getAcceptanceDate()));
         setActivity(new ActivityDto(participation.getActivity(), true));
-        setVolunteer(new UserDto(participation.getVolunteer()));
+        setVolunteerId(participation.getVolunteer().getId());
     }
 
 
@@ -62,12 +62,13 @@ public class ParticipationDto {
         this.activity = activity;
     }
 
-    public UserDto getVolunteer() {
-        return volunteer;
+
+    public Integer getVolunteerId() {
+        return volunteerId;
     }
 
-    public void setVolunteer(UserDto volunteer) {
-        this.volunteer = volunteer;
+    public void setVolunteerId(Integer volunteerId) {
+        this.volunteerId = volunteerId;
     }
 
     @Override

@@ -40,12 +40,12 @@ public class ParticipationService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public ParticipationDto createParticipation(Integer activityId, Integer userId, ParticipationDto participationDto){
+    public ParticipationDto createParticipation(Integer activityId, ParticipationDto participationDto){
         if (activityId == null) throw new HEException(ACTIVITY_NOT_FOUND);
         Activity activity = activityRepository.findById(activityId).orElseThrow(() -> new HEException(ACTIVITY_NOT_FOUND, activityId));
 
-        if (userId == null) throw new HEException(USER_NOT_FOUND);
-        Volunteer volunteer = (Volunteer) userRepository.findById(userId).orElseThrow(() -> new HEException(USER_NOT_FOUND, userId));
+        if (participationDto.getVolunteerId() == null) throw new HEException(USER_NOT_FOUND);
+        Volunteer volunteer = (Volunteer) userRepository.findById(participationDto.getVolunteerId()).orElseThrow(() -> new HEException(USER_NOT_FOUND, participationDto.getVolunteerId()));
 
         Participation participation = new Participation(activity,volunteer,participationDto);
 
