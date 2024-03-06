@@ -26,12 +26,6 @@ public class Volunteer extends User {
         super(name, Role.VOLUNTEER, state);
     }
 
-    /*
-    public void makeAssessment(String review, LocalDateTime reviewDate, Institution institution) {
-        Assessment assessment = new Assessment(institution, this, review, reviewDate);
-        addAssessment(assessment);
-    } */
-
     public void addAssessment(Assessment assessment) {
         this.assessments.add(assessment);
     }

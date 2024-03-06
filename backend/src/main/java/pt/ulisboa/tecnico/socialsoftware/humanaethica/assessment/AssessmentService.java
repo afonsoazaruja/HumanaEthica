@@ -43,7 +43,6 @@ public class AssessmentService {
     public AssessmentDto createAssessment(Integer userId, Integer institutionId, AssessmentDto assessmentDto) {
         if (userId == null) throw new HEException(USER_NOT_FOUND);
         if (institutionId == null) throw new HEException(INSTITUTION_NOT_FOUND);
-        if (assessmentDto == null) throw new HEException(ASSESSMENT_DTO_NOT_FOUND);
         Volunteer volunteer = (Volunteer) userRepository.findById(userId).orElseThrow(() -> new HEException(USER_NOT_FOUND, userId));
         Institution institution = (Institution) institutionRepository.findById(institutionId).orElseThrow(() -> new HEException(INSTITUTION_NOT_FOUND, institutionId));
 

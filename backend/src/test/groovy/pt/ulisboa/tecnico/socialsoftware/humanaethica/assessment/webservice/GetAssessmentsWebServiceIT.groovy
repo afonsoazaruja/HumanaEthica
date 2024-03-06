@@ -3,8 +3,10 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.webservice
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.domain.Assessment
@@ -20,6 +22,7 @@ class GetAssessmentsWebServiceIT extends SpockTest {
     private int port
 
     def institution
+    def assessmentDto
 
     def setup() {
         deleteAll()
@@ -35,24 +38,24 @@ class GetAssessmentsWebServiceIT extends SpockTest {
         def themes = new ArrayList<>()
         themes.add(createTheme(THEME_NAME_1, Theme.State.APPROVED,null))
         def activity = new Activity(activityDto, institution, themes)
+    }
 
-        and: "two volunteers"
+    def "get assessments"() {
+        given: "two volunteers"
         def volunteer1 = new Volunteer(USER_1_NAME, User.State.ACTIVE)
         userRepository.save(volunteer1)
         def volunteer2 = new Volunteer(USER_2_NAME, User.State.ACTIVE)
         userRepository.save(volunteer2)
 
         and: "an assessment"
-        def assessmentDto = createAssessmentDto(ASSESSMENT_REVIEW_1)
+        assessmentDto = createAssessmentDto(ASSESSMENT_REVIEW_1)
         def assessment = new Assessment(institution, volunteer1, assessmentDto)
         assessmentRepository.save(assessment)
         and: "another assessment"
         assessmentDto.setReview(ASSESSMENT_REVIEW_2)
         assessment = new Assessment(institution, volunteer2, assessmentDto)
         assessmentRepository.save(assessment)
-    }
 
-    def "get assessments"() {
         when:
         def response = webClient.get()
                 .uri("/assessments/" + institution.getId())
@@ -66,6 +69,30 @@ class GetAssessmentsWebServiceIT extends SpockTest {
         response.size() == 2
         response.get(0).review == ASSESSMENT_REVIEW_1
         response.get(1).review == ASSESSMENT_REVIEW_2
+
+        cleanup:
+        deleteAll()
+    }
+
+    def "login as member, and create an institution with error"() {
+        given: 'a member'
+        demoMemberLogin()
+        and: 'an invalid institution id'
+        institution.id = 222
+
+        when: 'the user registers the institution'
+        webClient.get()
+                .uri('/assessments/' + institution.getId())
+                .headers(httpHeaders -> httpHeaders.putAll(headers))
+                .retrieve()
+                .bodyToFlux(AssessmentDto.class)
+                .collectList()
+                .block()
+
+        then: "check response status"
+        def error = thrown(WebClientResponseException)
+        error.statusCode == HttpStatus.BAD_REQUEST
+        assessmentRepository.count() == 0
 
         cleanup:
         deleteAll()
