@@ -31,7 +31,7 @@ public class AssessmentController {
         return assessmentService.getAssessmentsByInstitution(institutionId);
     }
 
-    @PostMapping()
+    @PostMapping("/{institutionId}")
     @PreAuthorize("(hasRole('ROLE_VOLUNTEER'))")
     public AssessmentDto createAssessment(Principal principal, @PathVariable Integer institutionId, @Valid @RequestBody AssessmentDto assessmentDto){
         int userId = ((AuthUser) ((Authentication) principal).getPrincipal()).getUser().getId();
