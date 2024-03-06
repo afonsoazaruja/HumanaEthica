@@ -69,6 +69,7 @@ class GetAssessmentsWebServiceIT extends SpockTest {
         response.size() == 2
         response.get(0).review == ASSESSMENT_REVIEW_1
         response.get(1).review == ASSESSMENT_REVIEW_2
+        assessmentRepository.count() == 2
 
         cleanup:
         deleteAll()

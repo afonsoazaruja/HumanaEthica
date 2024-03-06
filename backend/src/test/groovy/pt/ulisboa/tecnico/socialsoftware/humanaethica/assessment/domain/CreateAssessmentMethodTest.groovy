@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.domain
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.BeanConfiguration
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity
@@ -11,7 +10,6 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 import spock.lang.Unroll
 
 @DataJpaTest
@@ -75,7 +73,7 @@ class CreateAssessmentMethodTest extends SpockTest {
         given:
         activity.getEndingDate() >> TWO_DAYS_AGO
         institution.getActivities() >> [activity]
-        otherAssessment.getVolunteer() >> otherVolunteer
+        otherAssessment.getVolunteer() >> volunteer
         otherAssessment.getInstitution() >> institution
         institution.getAssessments() >> [otherAssessment]
         and: "an assessment dto"
@@ -83,7 +81,7 @@ class CreateAssessmentMethodTest extends SpockTest {
         assessmentDto.setReview(ASSESSMENT_REVIEW_1)
 
         when:
-        new Assessment(institution, otherVolunteer, assessmentDto)
+        new Assessment(institution, volunteer, assessmentDto)
 
         then:
         def error = thrown(HEException)

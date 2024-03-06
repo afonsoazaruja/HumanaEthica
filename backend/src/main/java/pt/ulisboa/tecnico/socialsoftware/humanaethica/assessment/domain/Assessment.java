@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.domain;
 
 import jakarta.persistence.*;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.assessment.dto.AssessmentDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.exceptions.HEException;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution;
