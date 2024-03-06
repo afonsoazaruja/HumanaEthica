@@ -53,6 +53,9 @@ class GetParticipationsWebServiceIT extends SpockTest {
     }
 
     def "get participations"() {
+        given:
+        demoMemberLogin()
+
         when:
         def response = webClient.get()
                 .uri('/participations/' + activity.getId() + '/get')
