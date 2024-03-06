@@ -90,6 +90,20 @@ class CreateAssessmentMethodTest extends SpockTest {
         error.getErrorMessage() == ErrorMessage.VOLUNTEER_ALREADY_MADE_ASSESSMENT_FOR_INSTITUTION
     }
 
+    def "create an assessment whose institution has no activities"() {
+        given: "an assessment dto"
+        assessmentDto = new AssessmentDto()
+        assessmentDto.setReview(ASSESSMENT_REVIEW_1)
+
+        when:
+        new Assessment(institution, volunteer, assessmentDto)
+
+        then:
+        def error = thrown(HEException)
+        error.getErrorMessage() == ErrorMessage.INSTITUTION_HAS_NO_COMPLETED_ACTIVITIES
+
+    }
+
     @Unroll
     def "create assessment and violate institution can only be assessed when it has at least one completed activity : deadline=#deadline"() {
         given:
