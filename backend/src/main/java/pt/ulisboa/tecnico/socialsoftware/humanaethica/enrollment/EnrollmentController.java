@@ -23,17 +23,17 @@ import java.util.List;
 public class EnrollmentController {
     @Autowired
     private EnrollmentService enrollmentService;
+
     private static final Logger logger = LoggerFactory.getLogger(EnrollmentController.class);
 
     @GetMapping("/{activityId}")
-    public List<EnrollmentDto> getEnrollments(@PathVariable Integer activityId) {
+    public List<EnrollmentDto> getActivityEnrollments(@PathVariable Integer activityId) {
         return enrollmentService.getEnrollmentsByActivity(activityId);
     }
     
     @PostMapping()
     @PreAuthorize("(hasRole('ROLE_VOLUNTEER'))")
-    public EnrollmentDto createEnrollment(Principal principal, @PathVariable Integer activityId, @Valid @RequestBody
-        EnrollmentDto enrollmentDto) {
+    public EnrollmentDto createEnrollment(Principal principal, @PathVariable Integer activityId, @Valid @RequestBody EnrollmentDto enrollmentDto) {
         int userId = ((AuthUser) ((Authentication) principal).getPrincipal()).getUser().getId();
         return enrollmentService.createEnrollment(userId, activityId, enrollmentDto);
     }
