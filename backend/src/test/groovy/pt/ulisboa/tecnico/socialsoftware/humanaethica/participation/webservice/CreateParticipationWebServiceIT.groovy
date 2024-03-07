@@ -19,7 +19,7 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CreateParticipationWebServiceIT extends SpockTest {
+class CreateParticipationWebServiceIT extends SpockTest{
 
     @LocalServerPort
     private int port
@@ -28,7 +28,7 @@ class CreateParticipationWebServiceIT extends SpockTest {
     def activityId
     def volunteerId
 
-    def setup() {
+    def setup(){
         deleteAll()
 
         webClient = WebClient.create("http://localhost:" + port)
@@ -37,10 +37,10 @@ class CreateParticipationWebServiceIT extends SpockTest {
 
         volunteerId = authUserService.loginDemoVolunteerAuth().getUser().getId()
         def institution = institutionService.getDemoInstitution()
-        def activityDto = createActivityDto(ACTIVITY_NAME_1, ACTIVITY_REGION_1, 2, ACTIVITY_DESCRIPTION_1,
-                ONE_DAY_AGO, IN_TWO_DAYS, IN_THREE_DAYS, null)
+        def activityDto = createActivityDto(ACTIVITY_NAME_1,ACTIVITY_REGION_1,2,ACTIVITY_DESCRIPTION_1,
+                ONE_DAY_AGO,IN_TWO_DAYS,IN_THREE_DAYS,null)
         def themes = new ArrayList<>()
-        themes.add(createTheme(THEME_NAME_1, Theme.State.APPROVED, null))
+        themes.add(createTheme(THEME_NAME_1, Theme.State.APPROVED,null))
         def activity = new Activity(activityDto, institution, themes)
         activityRepository.save(activity)
         activityId = activity.getId()
@@ -48,7 +48,7 @@ class CreateParticipationWebServiceIT extends SpockTest {
 
     }
 
-    def "login as member, and create an participation"() {
+    def "login as member, and create an participation"(){
         given: "a member"
         demoMemberLogin()
 
@@ -81,4 +81,73 @@ class CreateParticipationWebServiceIT extends SpockTest {
         cleanup:
         deleteAll()
     }
+
+    def "login as member, and create an participation with error"() {
+        given: 'a member'
+        demoMemberLogin()
+        and: 'a no existing volunteer Id'
+        participationDto.volunteerId = 222
+
+        when: 'the member creates the participation'
+        webClient.post()
+                .uri('/participations/' + activityId + '/create')
+                .headers(httpHeaders -> httpHeaders.putAll(headers))
+                .bodyValue(participationDto)
+                .retrieve()
+                .bodyToMono(ParticipationDto.class)
+                .block()
+
+        then: "check response status"
+        def error = thrown(WebClientResponseException)
+        error.statusCode == HttpStatus.BAD_REQUEST
+        participationRepository.count() == 0
+
+        cleanup:
+        deleteAll()
+    }
+
+    def "login as volunteer, and create a participation"() {
+        given: 'a volunteer'
+        demoVolunteerLogin()
+
+        when: 'the volunteer creates the participation'
+        webClient.post()
+                .uri('/participations/' + activityId + '/create')
+                .headers(httpHeaders -> httpHeaders.putAll(headers))
+                .bodyValue(participationDto)
+                .retrieve()
+                .bodyToMono(ParticipationDto.class)
+                .block()
+
+        then: "an error is returned"
+        def error = thrown(WebClientResponseException)
+        error.statusCode == HttpStatus.FORBIDDEN
+        participationRepository.count() == 0
+
+        cleanup:
+        deleteAll()
+    }
+
+    def "login as admin, and create a participation"() {
+        given: 'a admin'
+        demoAdminLogin()
+
+        when: 'the admin creates the participation'
+        webClient.post()
+                .uri('/participations/' + activityId + '/create')
+                .headers(httpHeaders -> httpHeaders.putAll(headers))
+                .bodyValue(participationDto)
+                .retrieve()
+                .bodyToMono(ParticipationDto.class)
+                .block()
+
+        then: "an error is returned"
+        def error = thrown(WebClientResponseException)
+        error.statusCode == HttpStatus.FORBIDDEN
+        participationRepository.count() == 0
+
+        cleanup:
+        deleteAll()
+    }
+
 }
