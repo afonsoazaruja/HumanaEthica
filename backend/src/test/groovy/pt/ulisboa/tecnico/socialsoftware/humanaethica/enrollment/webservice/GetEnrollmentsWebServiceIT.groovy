@@ -3,8 +3,10 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.webservice
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.domain.AuthUser
@@ -66,7 +68,7 @@ class GetEnrollmentsWebServiceIT extends SpockTest {
         enrollmentRepository.save(enrollment)
     }
 
-    def "login as volunteer, and create an enrollment"() {
+    def "get enrollments"() {
         when:
         def response = webClient.get()
                 .uri("/enrollments/" + activity.id)
@@ -94,6 +96,23 @@ class GetEnrollmentsWebServiceIT extends SpockTest {
             activityId == activity.id
             volunteerId == volunteer2.id
         }
+
+        cleanup:
+        deleteAll()
+    }
+
+    def "get enrollments with access violation"() {
+        when:
+        webClient.get().uri("/enrollments/222")
+                .headers(httpHeaders -> httpHeaders.putAll(headers))
+                .retrieve()
+                .bodyToFlux(EnrollmentDto.class)
+                .collectList()
+                .block()
+
+        then:
+        def error = thrown(WebClientResponseException)
+        error.statusCode == HttpStatus.BAD_REQUEST
 
         cleanup:
         deleteAll()
