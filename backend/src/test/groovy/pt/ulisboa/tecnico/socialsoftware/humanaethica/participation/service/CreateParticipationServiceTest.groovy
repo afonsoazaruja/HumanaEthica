@@ -15,7 +15,6 @@ class CreateParticipationServiceTest extends SpockTest {
     public static final String EXIST = "exist"
     public static final String NO_EXIST = "noExist"
 
-
     def volunteerId
     def activityId
 
@@ -35,7 +34,7 @@ class CreateParticipationServiceTest extends SpockTest {
         given: "an participation dto"
         def participationDto = createParticipationDto(RATING_10, volunteerId)
 
-        when:
+        when: "a participation is created"
         def result = participationService.createParticipation(activityId, participationDto)
 
         then: "the returned data is correct"
@@ -56,7 +55,7 @@ class CreateParticipationServiceTest extends SpockTest {
 
     @Unroll
     def 'invalid arguments: IDactivity=#IDactivity | volunteerId=#IDvolunteer'(){
-        given: "an participation dto"
+        given: "a participation dto"
         def participationDto = createParticipationDto(RATING_1, getVolunteerId(IDvolunteer))
 
         when:
