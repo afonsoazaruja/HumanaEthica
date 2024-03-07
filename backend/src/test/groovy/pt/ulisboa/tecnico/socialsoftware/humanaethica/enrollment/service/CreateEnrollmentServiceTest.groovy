@@ -49,8 +49,6 @@ class CreateEnrollmentServiceTest extends SpockTest {
 
         when:
         def result = enrollmentService.createEnrollment(activity.id, volunteer.id, enrollmentDto)
-        and:
-        def stored = enrollmentRepository.getEnrollmentsByActivity(activity.id).get(0)
 
         then: "the returned enrollment is correct"
         with (result) {
@@ -64,7 +62,9 @@ class CreateEnrollmentServiceTest extends SpockTest {
         enrollmentRepository.count() == 1
 
         and: "enrollment data stored in repository is correct"
-        with (stored) {
+        def enrollment = enrollmentRepository.getEnrollmentsByActivity(activity.id).get(0)
+
+        with (enrollment) {
             motivation == ENROLLMENT_MOTIVATION_1
             enrollmentDateTime != null
             activity.getId() == this.activity.id
