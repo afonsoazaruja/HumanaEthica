@@ -4,9 +4,12 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.domain.Enrollme
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
 
 public class EnrollmentDto {
+
     private Integer id;
     private String motivation;
     private String enrollmentDateTime;
+    private Integer activityId;
+    private Integer volunteerId;
 
     public EnrollmentDto(){
     }
@@ -15,6 +18,8 @@ public class EnrollmentDto {
         setId(enrollment.getId());
         setMotivation(enrollment.getMotivation());
         setEnrollmentDateTime(DateHandler.toISOString(enrollment.getEnrollmentDateTime()));
+        setActivityId(enrollment.getActivity().getId());
+        setVolunteerId(enrollment.getVolunteer().getId());
     }
 
     public void setId(Integer id) {
@@ -39,6 +44,22 @@ public class EnrollmentDto {
 
     public String getEnrollmentDateTime() {
         return enrollmentDateTime;
+    }
+
+    public void setActivityId(Integer activityId) {
+        this.activityId = activityId;
+    }
+
+    public Integer getActivityId() {
+        return activityId;
+    }
+
+    public void setVolunteerId(Integer volunteerId) {
+        this.volunteerId = volunteerId;
+    }
+
+    public Integer getVolunteerId() {
+        return volunteerId;
     }
 
     @Override
