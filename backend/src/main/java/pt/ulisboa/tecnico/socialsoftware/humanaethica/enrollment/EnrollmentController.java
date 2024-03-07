@@ -31,7 +31,7 @@ public class EnrollmentController {
         return enrollmentService.getEnrollmentsByActivity(activityId);
     }
     
-    @PostMapping()
+    @PostMapping("/{activityId}")
     @PreAuthorize("(hasRole('ROLE_VOLUNTEER'))")
     public EnrollmentDto createEnrollment(Principal principal, @PathVariable Integer activityId, @Valid @RequestBody EnrollmentDto enrollmentDto) {
         int userId = ((AuthUser) ((Authentication) principal).getPrincipal()).getUser().getId();
