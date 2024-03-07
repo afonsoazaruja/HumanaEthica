@@ -17,7 +17,9 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.User
 class GetEnrollmentsServiceTest extends SpockTest {
     public static final Integer NO_EXIST = 222
 
-    def activityId
+    def activity
+    def volunteer1
+    def volunteer2
 
     def setup() {
         def institution = institutionService.getDemoInstitution()
@@ -25,21 +27,25 @@ class GetEnrollmentsServiceTest extends SpockTest {
         def activityDto = createActivityDto(
                 ACTIVITY_NAME_1, ACTIVITY_REGION_1, 1, ACTIVITY_DESCRIPTION_1,
                 IN_ONE_DAY, IN_TWO_DAYS, IN_THREE_DAYS,null)
+        
         and: "a theme"
         def themes = new ArrayList<>()
         themes.add(createTheme(THEME_NAME_1, Theme.State.APPROVED, null))
+
         and: "an activity"
-        def activity = new Activity(activityDto, institution, themes)
+        activity = new Activity(activityDto, institution, themes)
         activityRepository.save(activity)
-        activityId = activity.getId()
+
         and: "a volunteer"
-        def volunteer1 = createVolunteer(
+        volunteer1 = createVolunteer(
                 USER_1_NAME, USER_1_USERNAME, USER_1_EMAIL,
                 AuthUser.Type.NORMAL, User.State.SUBMITTED)
+        
         and: "another volunteer"
-        def volunteer2 = createVolunteer(
+        volunteer2 = createVolunteer(
                 USER_2_NAME, USER_2_USERNAME, USER_2_EMAIL,
                 AuthUser.Type.NORMAL, User.State.SUBMITTED)
+        
         and: "an enrollment"
         def enrollmentDto = new EnrollmentDto()
         enrollmentDto.setId(ENROLLMENT_ID_1)
@@ -55,12 +61,24 @@ class GetEnrollmentsServiceTest extends SpockTest {
 
     def "get two enrollments"() {
         when:
-        def result = enrollmentService.getEnrollmentsByActivity(activityId)
+        def result = enrollmentService.getEnrollmentsByActivity(activity.id)
 
-        then:
+        then: "two enrollments"
         result.size() == 2
-        result.get(0).getMotivation() == ENROLLMENT_MOTIVATION_1
-        result.get(1).getMotivation() == ENROLLMENT_MOTIVATION_2
+
+        and: "enrollment 1 is correct"
+        with(result.get(0)) {
+            motivation == ENROLLMENT_MOTIVATION_1
+            activityId == this.activity.id
+            volunteerId == this.volunteer1.id
+        }
+
+        and: "enrollment 2 is correct"
+        with(result.get(1)) {
+            motivation == ENROLLMENT_MOTIVATION_2
+            activityId == this.activity.id
+            volunteerId == this.volunteer2.id
+        }
     }
 
     def "invalid arguments: activityId=#activityId"() {

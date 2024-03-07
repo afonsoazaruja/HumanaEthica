@@ -15,7 +15,6 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.repository.AuthUserRe
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.demo.DemoService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.demo.DemoUtils
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.EnrollmentService
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.domain.Enrollment
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.dto.EnrollmentDto
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.repository.EnrollmentRepository
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.InstitutionService
@@ -250,6 +249,7 @@ class SpockTest extends Specification {
     // clean database
 
     def deleteAll() {
+        enrollmentRepository.deleteAll()
         activityRepository.deleteAllActivityTheme()
         activityRepository.deleteAll()
         authUserRepository.deleteAll()
