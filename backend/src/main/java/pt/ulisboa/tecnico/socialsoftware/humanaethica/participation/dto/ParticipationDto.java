@@ -1,14 +1,8 @@
 package pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.dto;
 
-import jakarta.activation.DataHandler;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.dto.ActivityDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.participation.domain.Participation;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer;
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.dto.UserDto;
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.dto.ActivityDto;
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler;
-
-import java.time.LocalDateTime;
 
 public class ParticipationDto {
     private Integer id;
