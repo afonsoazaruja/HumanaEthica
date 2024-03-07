@@ -25,7 +25,6 @@ import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.repository.ThemeRepo
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.UserApplicationalService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.UserService
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Member
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.repository.UserRepository
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.Mailer
@@ -173,12 +172,6 @@ class SpockTest extends Specification {
         return member
     }
 
-    def createVolunteer(name, userName, email, type, state) {
-        def volunteer = new Volunteer(name, userName, email, type, state)
-        userRepository.save(volunteer)
-        return volunteer
-    }
-
     // theme
 
     public static final String THEME_NAME_1 = "THEME_NAME 1"
@@ -230,7 +223,6 @@ class SpockTest extends Specification {
     public static final Integer ENROLLMENT_ID_1 = 1
     public static final String ENROLLMENT_MOTIVATION_1 = "enrollment motivation 1"
     public static final String ENROLLMENT_MOTIVATION_2 = "enrollment motivation 2"
-    public static final String ENROLLMENT_DATE_TIME_NOW = "NOW"
 
     @Autowired
     EnrollmentRepository enrollmentRepository
@@ -257,6 +249,4 @@ class SpockTest extends Specification {
         institutionRepository.deleteAll()
         themeRepository.deleteAll()
     }
-
-
 }

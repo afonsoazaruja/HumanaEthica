@@ -9,8 +9,9 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.dto.ActivityDto
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.dto.EnrollmentDto
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.domain.Theme
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CreateEnrollmentWebServiceIT extends SpockTest {
@@ -27,21 +28,24 @@ class CreateEnrollmentWebServiceIT extends SpockTest {
         headers = new HttpHeaders()
         headers.setContentType(MediaType.APPLICATION_JSON)
 
+        given: "demo institution"
         def institution = institutionService.getDemoInstitution()
-        given: "activity info"
-        def activityDto = createActivityDto(
-                ACTIVITY_NAME_1, ACTIVITY_REGION_1, 1, ACTIVITY_DESCRIPTION_1,
-                IN_ONE_DAY, IN_TWO_DAYS, IN_THREE_DAYS,null)
 
-        and: "a theme"
-        def themes = new ArrayList<>()
-        themes.add(createTheme(THEME_NAME_1, Theme.State.APPROVED, null))
+        and: "activity dto"
+        def activityDto = new ActivityDto()
+        activityDto.setName(ACTIVITY_NAME_1)
+        activityDto.setRegion(ACTIVITY_REGION_1)
+        activityDto.setDescription(ACTIVITY_DESCRIPTION_1)
+        activityDto.setParticipantsNumberLimit(1)
+        activityDto.setStartingDate(DateHandler.toISOString(IN_TWO_DAYS))
+        activityDto.setEndingDate(DateHandler.toISOString(IN_THREE_DAYS))
+        activityDto.setApplicationDeadline(DateHandler.toISOString(IN_ONE_DAY))
 
-        and: "an activity"
-        activity = new Activity(activityDto, institution, themes)
+        and: "activity"
+        activity = new Activity(activityDto, institution, Collections.emptyList())
         activityRepository.save(activity)
 
-        and: "an enrollment dto"
+        and: "enrollment dto"
         enrollmentDto = new EnrollmentDto()
         enrollmentDto.setMotivation(ENROLLMENT_MOTIVATION_1)
     }
@@ -82,7 +86,7 @@ class CreateEnrollmentWebServiceIT extends SpockTest {
         deleteAll()
     }
 
-    def "login as volunteer, and create an enrollment with error"() {
+    def "login as volunteer, and create an invalid enrollment"() {
         given:
         demoVolunteerLogin()
 
@@ -100,6 +104,8 @@ class CreateEnrollmentWebServiceIT extends SpockTest {
         then:
         def error = thrown(WebClientResponseException)
         error.statusCode == HttpStatus.BAD_REQUEST
+
+        and: "enrollment was not stored"
         enrollmentRepository.count() == 0
 
         cleanup:
@@ -121,6 +127,8 @@ class CreateEnrollmentWebServiceIT extends SpockTest {
         then:
         def error = thrown(WebClientResponseException)
         error.statusCode == HttpStatus.FORBIDDEN
+
+        and: "enrollment was not stored"
         enrollmentRepository.count() == 0
 
         cleanup:
@@ -142,6 +150,8 @@ class CreateEnrollmentWebServiceIT extends SpockTest {
         then:
         def error = thrown(WebClientResponseException)
         error.statusCode == HttpStatus.FORBIDDEN
+
+        and: "enrollment was not stored"
         enrollmentRepository.count() == 0
 
         cleanup:
