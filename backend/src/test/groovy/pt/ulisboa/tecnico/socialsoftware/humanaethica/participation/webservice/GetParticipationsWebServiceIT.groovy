@@ -25,7 +25,6 @@ class GetParticipationsWebServiceIT extends SpockTest {
     def volunteerId1
     def volunteerId2
 
-
     def setup() {
         deleteAll()
 

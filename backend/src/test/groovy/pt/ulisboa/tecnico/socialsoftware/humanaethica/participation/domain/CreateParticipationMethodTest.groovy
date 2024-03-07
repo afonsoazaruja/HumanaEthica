@@ -24,27 +24,29 @@ class CreateParticipationMethodTest extends SpockTest {
 
     @Unroll
     def "create participation with activity and volunteer has another participation"() {
-        given:
-        otherParticipation.getVolunteer().getName() >> USER_2_NAME
-        activity.getNumberOfParticipants() >> 1
+        given: "a volunteer"
+        Volunteer otherVolunteer = Mock()
+        and: "a participation"
+        otherParticipation.getVolunteer() >> otherVolunteer
+        and: "an activity with this participation and this volunteer"
         activity.getName() >> ACTIVITY_NAME_1
-        activity.getRegion() >> ACTIVITY_REGION_1
+        activity.getNumberOfParticipants() >> 1
         activity.getParticipantsNumberLimit() >> 2
-        activity.getDescription() >> ACTIVITY_DESCRIPTION_1
         activity.getApplicationDeadline() >> ONE_DAY_AGO
         activity.getParticipations() >> [otherParticipation]
+        and: "another volunteer"
         volunteer.getName() >> USER_1_NAME
         and: "a participation dto"
         participationDto = new ParticipationDto()
-        participationDto.rating = 10
+        participationDto.rating = RATING_10
 
-        when:
+        when: "a participation is created with this new volunteer in the same activity"
         def result = new Participation(activity, volunteer, participationDto)
 
         then: "check results"
-        result.getVolunteer().getName() == USER_1_NAME
-        result.getActivity().getName() == ACTIVITY_NAME_1
-        result.getRating() == 10
+        result.getVolunteer() == volunteer
+        result.getActivity() == activity
+        result.getRating() == RATING_10
         and: "invocations"
         1 * activity.addParticipation(_)
         1 * volunteer.addParticipation(_)
@@ -61,14 +63,14 @@ class CreateParticipationMethodTest extends SpockTest {
         otherActivity.getParticipantsNumberLimit() >> 2
         otherActivity.getParticipations() >> [otherParticipation]
         and: "a activity"
-        activity.getNumberOfParticipants() >> 0
+        activity.getNumberOfParticipants() >> 1
         activity.getParticipantsNumberLimit() >> 2
         activity.getApplicationDeadline() >> ONE_DAY_AGO
         and: "a participation dto"
         participationDto = new ParticipationDto()
         participationDto.rating = 10
 
-        when:
+        when: "when a participation is created in another activity"
         def result = new Participation(activity, volunteer, participationDto)
 
         then: "check results"
@@ -82,13 +84,12 @@ class CreateParticipationMethodTest extends SpockTest {
 
     @Unroll
     def "create participation and violate invariant participantsWithinLimit, participantsNumberLimit < participations"() {
-        given:
+        given: "an activity"
         activity.getNumberOfParticipants() >> 2
         activity.getName() >> ACTIVITY_NAME_1
-        activity.getRegion() >> ACTIVITY_REGION_1
         activity.getParticipantsNumberLimit() >> 1
-        activity.getDescription() >> ACTIVITY_DESCRIPTION_1
         activity.getApplicationDeadline() >> ONE_DAY_AGO
+        and: "a volunteer"
         volunteer.getName() >> USER_1_NAME
         and: "a participation dto"
         participationDto = new ParticipationDto()
@@ -97,22 +98,22 @@ class CreateParticipationMethodTest extends SpockTest {
         when:
         new Participation(activity, volunteer, participationDto)
 
-        then: "check results"
+        then: "check errors"
         def error = thrown(HEException)
         error.getErrorMessage() == ErrorMessage.PARTICIPATION_TOO_MANY_PARTICIPANTS
     }
 
     @Unroll
     def "create participation and violate invariant isUnique, two participations from the same volunteer"() {
-        given:
+        given: "an activity"
         activity.getName() >> ACTIVITY_NAME_1
-        activity.getRegion() >> ACTIVITY_REGION_1
         activity.getNumberOfParticipants() >> 1
         activity.getParticipantsNumberLimit() >> 2
-        activity.getDescription() >> ACTIVITY_DESCRIPTION_1
         activity.getApplicationDeadline() >> ONE_DAY_AGO
+        and: "a participation"
         otherParticipation.getVolunteer() >> volunteer
         otherParticipation.getActivity() >> activity
+        and: "a volunteer"
         volunteer.getName() >> USER_1_NAME
         volunteer.getParticipations() >> [otherParticipation]
         and: "a participation dto"
@@ -122,20 +123,19 @@ class CreateParticipationMethodTest extends SpockTest {
         when:
         new Participation(activity, volunteer, participationDto)
 
-        then: "check results"
+        then: "check errors"
         def error = thrown(HEException)
         error.getErrorMessage() == ErrorMessage.PARTICIPATION_VOLUNTEER_ALREADY_PARTICIPATES
     }
 
     @Unroll
     def "create participation and violate invariant isAfterDeadline, acceptanceDate isBefore ApplicationDeadline"() {
-        given:
+        given: "an activity"
         activity.getName() >> ACTIVITY_NAME_1
-        activity.getRegion() >> ACTIVITY_REGION_1
         activity.getNumberOfParticipants() >> 1
         activity.getParticipantsNumberLimit() >> 2
-        activity.getDescription() >> ACTIVITY_DESCRIPTION_1
         activity.getApplicationDeadline() >> IN_THREE_DAYS
+        and: "a volunteer"
         volunteer.getName() >> USER_1_NAME
         and: "a participation dto"
         participationDto = new ParticipationDto()
@@ -145,7 +145,7 @@ class CreateParticipationMethodTest extends SpockTest {
         when:
         new Participation(activity, volunteer, participationDto)
 
-        then: "check results"
+        then: "check errors"
         def error = thrown(HEException)
         error.getErrorMessage() == errorMessage
 
