@@ -33,10 +33,10 @@ class GetAssessmentsWebServiceIT extends SpockTest {
 
         given: "an institution with a completed activity"
         institution = institutionService.getDemoInstitution()
-        def activityDto = createActivityDto(ACTIVITY_NAME_1,ACTIVITY_REGION_1,1,ACTIVITY_DESCRIPTION_1,
-                DateHandler.now().minusDays(3),TWO_DAYS_AGO,ONE_DAY_AGO,null)
+        def activityDto = createActivityDto(ACTIVITY_NAME_1, ACTIVITY_REGION_1, 1, ACTIVITY_DESCRIPTION_1,
+                DateHandler.now().minusDays(3), TWO_DAYS_AGO, ONE_DAY_AGO, null)
         def themes = new ArrayList<>()
-        themes.add(createTheme(THEME_NAME_1, Theme.State.APPROVED,null))
+        themes.add(createTheme(THEME_NAME_1, Theme.State.APPROVED, null))
         def activity = new Activity(activityDto, institution, themes)
     }
 
@@ -75,7 +75,7 @@ class GetAssessmentsWebServiceIT extends SpockTest {
         deleteAll()
     }
 
-    def "login as member, and create an institution with error"() {
+    def "login as member, and get assessments from institution with error"() {
         given: 'a member'
         demoMemberLogin()
         and: 'an invalid institution id'
