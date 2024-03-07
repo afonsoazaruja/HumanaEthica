@@ -61,7 +61,7 @@ class CreateEnrollmentServiceTest extends SpockTest {
         }
 
         and: "enrollment is saved in the database"
-        enrollmentRepository.findAll().size() == 1
+        enrollmentRepository.count() == 1
 
         and: "enrollment data stored in repository is correct"
         with (stored) {
@@ -77,12 +77,12 @@ class CreateEnrollmentServiceTest extends SpockTest {
         when:
         enrollmentService.createEnrollment(getVolunteerId(userId), getActivityId(activityId), enrollmentDto)
 
-        then:
+        then: "exception is thrown"
         def error = thrown(HEException)
         error.getErrorMessage() == errorMessage
 
         and: "no enrollment is stored in the database"
-        enrollmentRepository.findAll().size() == 0
+        enrollmentRepository.count() == 0
 
         where:
         userId   | activityId || errorMessage
