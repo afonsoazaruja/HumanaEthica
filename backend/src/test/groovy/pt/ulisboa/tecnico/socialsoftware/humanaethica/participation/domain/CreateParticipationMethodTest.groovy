@@ -17,6 +17,7 @@ import java.time.LocalDateTime
 @DataJpaTest
 class CreateParticipationMethodTest extends SpockTest {
     Activity activity = Mock()
+    Activity otherActivity = Mock()
     Participation otherParticipation = Mock()
     Volunteer volunteer = Mock()
     def participationDto
@@ -31,11 +32,11 @@ class CreateParticipationMethodTest extends SpockTest {
         activity.getParticipantsNumberLimit() >> 2
         activity.getDescription() >> ACTIVITY_DESCRIPTION_1
         activity.getApplicationDeadline() >> ONE_DAY_AGO
+        activity.getParticipations() >> [otherParticipation]
         volunteer.getName() >> USER_1_NAME
         and: "a participation dto"
         participationDto = new ParticipationDto()
         participationDto.rating = 10
-
 
         when:
         def result = new Participation(activity, volunteer, participationDto)
@@ -43,6 +44,36 @@ class CreateParticipationMethodTest extends SpockTest {
         then: "check results"
         result.getVolunteer().getName() == USER_1_NAME
         result.getActivity().getName() == ACTIVITY_NAME_1
+        result.getRating() == 10
+        and: "invocations"
+        1 * activity.addParticipation(_)
+        1 * volunteer.addParticipation(_)
+    }
+
+    @Unroll
+    def "create participation with with same volunteer in another activity"() {
+        given: "a volunteer"
+        volunteer.getParticipations() >> [otherParticipation]
+        and: "another participation"
+        otherParticipation.getVolunteer() >> volunteer
+        otherParticipation.getActivity() >> otherActivity
+        and: "another activity"
+        otherActivity.getParticipantsNumberLimit() >> 2
+        otherActivity.getParticipations() >> [otherParticipation]
+        and: "a activity"
+        activity.getNumberOfParticipants() >> 0
+        activity.getParticipantsNumberLimit() >> 2
+        activity.getApplicationDeadline() >> ONE_DAY_AGO
+        and: "a participation dto"
+        participationDto = new ParticipationDto()
+        participationDto.rating = 10
+
+        when:
+        def result = new Participation(activity, volunteer, participationDto)
+
+        then: "check results"
+        result.getVolunteer() == volunteer
+        result.getActivity() == activity
         result.getRating() == 10
         and: "invocations"
         1 * activity.addParticipation(_)
