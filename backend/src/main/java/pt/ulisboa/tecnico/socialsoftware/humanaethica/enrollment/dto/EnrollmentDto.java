@@ -67,7 +67,9 @@ public class EnrollmentDto {
         return "EnrollmentDTO{" +
                 "id=" + id +
                 ", motivation='" + motivation + '\'' +
-                ", dateTime=" + enrollmentDateTime +
+                ", enrollmentDateTime=" + enrollmentDateTime +
+                ", activityId=" + activityId +
+                ", volunteerId=" + volunteerId +
                 "}";
     }
 }
