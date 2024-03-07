@@ -3,8 +3,10 @@ package pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.webservice
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.WebClientResponseException
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.dto.EnrollmentDto
@@ -75,5 +77,74 @@ class CreateEnrollmentWebServiceIT extends SpockTest {
         enrollment.enrollmentDateTime != null
         enrollment.activity.id == activity.id
         enrollment.volunteer.id == volunteer.id
+
+        cleanup:
+        deleteAll()
+    }
+
+    def "login as volunteer, and create an enrollment with error"() {
+        given:
+        demoVolunteerLogin()
+
+        and: "invalid motivation"
+        enrollmentDto.motivation = "  "
+
+        when:
+        webClient.post().uri("/enrollments/" + activity.id)
+                .headers(httpHeaders -> httpHeaders.putAll(headers))
+                .bodyValue(enrollmentDto)
+                .retrieve()
+                .bodyToMono(EnrollmentDto.class)
+                .block()
+
+        then:
+        def error = thrown(WebClientResponseException)
+        error.statusCode == HttpStatus.BAD_REQUEST
+        enrollmentRepository.count() == 0
+
+        cleanup:
+        deleteAll()
+    }
+
+    def "login as member, and create an enrollment"() {
+        given:
+        demoMemberLogin()
+
+        when:
+        webClient.post().uri("/enrollments/" + activity.id)
+                .headers(httpHeaders -> httpHeaders.putAll(headers))
+                .bodyValue(enrollmentDto)
+                .retrieve()
+                .bodyToMono(EnrollmentDto.class)
+                .block()
+
+        then:
+        def error = thrown(WebClientResponseException)
+        error.statusCode == HttpStatus.FORBIDDEN
+        enrollmentRepository.count() == 0
+
+        cleanup:
+        deleteAll()
+    }
+
+    def "login as admin, and create an enrollment"() {
+        given:
+        demoAdminLogin()
+
+        when:
+        webClient.post().uri("/enrollments/" + activity.id)
+                .headers(httpHeaders -> httpHeaders.putAll(headers))
+                .bodyValue(enrollmentDto)
+                .retrieve()
+                .bodyToMono(EnrollmentDto.class)
+                .block()
+
+        then:
+        def error = thrown(WebClientResponseException)
+        error.statusCode == HttpStatus.FORBIDDEN
+        enrollmentRepository.count() == 0
+
+        cleanup:
+        deleteAll()
     }
 }
