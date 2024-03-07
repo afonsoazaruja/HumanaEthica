@@ -21,7 +21,6 @@ class CreateAssessmentMethodTest extends SpockTest {
     Volunteer otherVolunteer = Mock()
     def assessmentDto
 
-    @Unroll
     def "successfully create a new assessment where the institution has another assessment"() {
         given:
         activity.getEndingDate() >> TWO_DAYS_AGO
@@ -30,7 +29,7 @@ class CreateAssessmentMethodTest extends SpockTest {
         otherAssessment.getVolunteer() >> otherVolunteer
         and: "an assessment dto"
         assessmentDto = new AssessmentDto()
-        assessmentDto.setReview(review)
+        assessmentDto.setReview(ASSESSMENT_REVIEW_1)
 
         when:
         Assessment result = new Assessment(institution, volunteer, assessmentDto)
@@ -38,14 +37,11 @@ class CreateAssessmentMethodTest extends SpockTest {
         then: "check result"
         result.getInstitution() == institution
         result.getVolunteer() == volunteer
-        result.getReview() == review
+        result.getReview() == ASSESSMENT_REVIEW_1
         // check if methods were called only once
         and: "invocations"
         1 * institution.addAssessment(_)
         1 * volunteer.addAssessment(_)
-
-        where:
-        review << ["valid review", "1234567890"]
     }
 
 

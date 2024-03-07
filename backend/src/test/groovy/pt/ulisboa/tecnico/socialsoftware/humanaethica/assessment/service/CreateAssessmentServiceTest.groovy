@@ -55,6 +55,8 @@ class CreateAssessmentServiceTest extends SpockTest {
         then:
         def error = thrown(HEException)
         error.getErrorMessage() == errorMessage
+        and: "no assessment is stored in the database"
+        assessmentRepository.findAll().size() == 0
 
         where:
         volunteerId     | institutionId   || errorMessage
