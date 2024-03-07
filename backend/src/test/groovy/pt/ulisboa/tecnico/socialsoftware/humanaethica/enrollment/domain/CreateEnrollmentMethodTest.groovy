@@ -34,7 +34,8 @@ class CreateEnrollmentMethodTest extends SpockTest {
         enrollment.getVolunteer() == volunteer
         enrollment.getActivity() == activity
         enrollment.getMotivation() == ENROLLMENT_MOTIVATION_1
-        // can we test enrollment.getEnrollmentDateTime()?
+        enrollment.getEnrollmentDateTime() != null
+        
         and:
         1 * volunteer.addEnrollment(_)
         1 * activity.addEnrollment(_)

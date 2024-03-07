@@ -93,7 +93,7 @@ public class Enrollment {
 
     private void enrollmentIsUnique() {
         if (this.volunteer.getEnrollments().stream()
-                .anyMatch(enrollment -> enrollment != this && enrollment.getActivity().equals(this.getActivity()))) {
+                .anyMatch(enrollment -> enrollment != this && enrollment.getActivity().equals(this.activity))) {
             throw new HEException(ENROLLMENT_ALREADY_EXISTS);
         }
     }

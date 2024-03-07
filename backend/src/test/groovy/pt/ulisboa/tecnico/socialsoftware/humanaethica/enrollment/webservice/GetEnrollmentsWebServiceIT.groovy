@@ -9,11 +9,14 @@ import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.WebClientResponseException
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.domain.Activity
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.activity.dto.ActivityDto
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.auth.domain.AuthUser
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.domain.Enrollment
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.enrollment.dto.EnrollmentDto
-import pt.ulisboa.tecnico.socialsoftware.humanaethica.theme.domain.Theme
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.institution.domain.Institution
 import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.User
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.user.domain.Volunteer
+import pt.ulisboa.tecnico.socialsoftware.humanaethica.utils.DateHandler
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class GetEnrollmentsWebServiceIT extends SpockTest {
@@ -31,44 +34,49 @@ class GetEnrollmentsWebServiceIT extends SpockTest {
         headers = new HttpHeaders()
         headers.setContentType(MediaType.APPLICATION_JSON)
 
+        given: "demo institution"
         def institution = institutionService.getDemoInstitution()
-        given: "activity info"
-        def activityDto = createActivityDto(
-                ACTIVITY_NAME_1, ACTIVITY_REGION_1, 1, ACTIVITY_DESCRIPTION_1,
-                IN_ONE_DAY, IN_TWO_DAYS, IN_THREE_DAYS,null)
 
-        and: "a theme"
-        def themes = new ArrayList<>()
-        themes.add(createTheme(THEME_NAME_1, Theme.State.APPROVED, null))
+        and: "activity dto"
+        def activityDto = new ActivityDto()
+        activityDto.setName(ACTIVITY_NAME_1)
+        activityDto.setRegion(ACTIVITY_REGION_1)
+        activityDto.setDescription(ACTIVITY_DESCRIPTION_1)
+        activityDto.setParticipantsNumberLimit(1)
+        activityDto.setStartingDate(DateHandler.toISOString(IN_TWO_DAYS))
+        activityDto.setEndingDate(DateHandler.toISOString(IN_THREE_DAYS))
+        activityDto.setApplicationDeadline(DateHandler.toISOString(IN_ONE_DAY))
 
-        and: "an activity"
-        activity = new Activity(activityDto, institution, themes)
+        and: "activity"
+        activity = new Activity(activityDto, institution, Collections.emptyList())
         activityRepository.save(activity)
+    }
 
-        and: "a volunteer"
-        volunteer1 = createVolunteer(
+    def "login as member, and get enrollments"() {
+        given: "2 volunteers"
+        volunteer1 = new Volunteer(
                 USER_1_NAME, USER_1_USERNAME, USER_1_EMAIL,
                 AuthUser.Type.NORMAL, User.State.SUBMITTED)
 
-        and: "another volunteer"
-        volunteer2 = createVolunteer(
+        volunteer2 = new Volunteer(
                 USER_2_NAME, USER_2_USERNAME, USER_2_EMAIL,
                 AuthUser.Type.NORMAL, User.State.SUBMITTED)
 
-        and: "an enrollment"
-        def enrollmentDto = new EnrollmentDto()
-        enrollmentDto.setId(ENROLLMENT_ID_1)
-        enrollmentDto.setMotivation(ENROLLMENT_MOTIVATION_1)
+        userRepository.save(volunteer1)
+        userRepository.save(volunteer2)
 
-        def enrollment = new Enrollment(activity, volunteer1, enrollmentDto)
-        enrollmentRepository.save(enrollment)
+        and: "2 enrollments"
+        def enrollmentDto = new EnrollmentDto()
+
+        enrollmentDto.setMotivation(ENROLLMENT_MOTIVATION_1)
+        enrollmentRepository.save(new Enrollment(activity, volunteer1, enrollmentDto))
 
         enrollmentDto.setMotivation(ENROLLMENT_MOTIVATION_2)
-        enrollment = new Enrollment(activity, volunteer2, enrollmentDto)
-        enrollmentRepository.save(enrollment)
-    }
+        enrollmentRepository.save(new Enrollment(activity, volunteer2, enrollmentDto))
 
-    def "get enrollments"() {
+        and: "demo member (is member of demo institution)"
+        demoMemberLogin()
+
         when:
         def response = webClient.get()
                 .uri("/enrollments/" + activity.id)
@@ -101,7 +109,77 @@ class GetEnrollmentsWebServiceIT extends SpockTest {
         deleteAll()
     }
 
-    def "get enrollments with access violation"() {
+    def "login as member of another institution, and get enrollments"() {
+        given: "another institution"
+        def otherInstitution = new Institution(INSTITUTION_1_NAME, INSTITUTION_1_EMAIL, INSTITUTION_1_NIF)
+        institutionRepository.save(otherInstitution)
+
+        and: "member of that institution"
+        createMember(
+                USER_3_NAME, USER_3_USERNAME, USER_1_PASSWORD, USER_3_EMAIL,
+                AuthUser.Type.NORMAL, otherInstitution, User.State.APPROVED)
+        normalUserLogin(USER_3_USERNAME, USER_1_PASSWORD)
+
+        when:
+        webClient.get().uri("/enrollments/" + activity.id)
+                .headers(httpHeaders -> httpHeaders.putAll(headers))
+                .retrieve()
+                .bodyToFlux(EnrollmentDto.class)
+                .collectList()
+                .block()
+
+        then:
+        def error = thrown(WebClientResponseException)
+        error.statusCode == HttpStatus.FORBIDDEN
+
+        cleanup:
+        deleteAll()
+    }
+
+    def "login as volunteer, and get enrollments"() {
+        given:
+        demoVolunteerLogin()
+
+        when:
+        webClient.get().uri("/enrollments/" + activity.id)
+                .headers(httpHeaders -> httpHeaders.putAll(headers))
+                .retrieve()
+                .bodyToFlux(EnrollmentDto.class)
+                .collectList()
+                .block()
+
+        then:
+        def error = thrown(WebClientResponseException)
+        error.statusCode == HttpStatus.FORBIDDEN
+
+        cleanup:
+        deleteAll()
+    }
+
+    def "login as admin, and get enrollments"() {
+        given:
+        demoAdminLogin()
+
+        when:
+        webClient.get().uri("/enrollments/" + activity.id)
+                .headers(httpHeaders -> httpHeaders.putAll(headers))
+                .retrieve()
+                .bodyToFlux(EnrollmentDto.class)
+                .collectList()
+                .block()
+
+        then:
+        def error = thrown(WebClientResponseException)
+        error.statusCode == HttpStatus.FORBIDDEN
+
+        cleanup:
+        deleteAll()
+    }
+
+    def "login as member, and get enrollments of invalid activity"() {
+        given:
+        demoMemberLogin()
+
         when:
         webClient.get().uri("/enrollments/222")
                 .headers(httpHeaders -> httpHeaders.putAll(headers))
@@ -112,7 +190,7 @@ class GetEnrollmentsWebServiceIT extends SpockTest {
 
         then:
         def error = thrown(WebClientResponseException)
-        error.statusCode == HttpStatus.BAD_REQUEST
+        error.statusCode == HttpStatus.FORBIDDEN
 
         cleanup:
         deleteAll()
