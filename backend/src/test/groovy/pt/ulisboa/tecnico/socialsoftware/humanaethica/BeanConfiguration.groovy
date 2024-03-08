@@ -85,6 +85,7 @@ class BeanConfiguration {
         return new ParticipationService()
     }
 
+    @Bean
     EnrollmentService enrollmentService() {
         return new EnrollmentService()
     }
