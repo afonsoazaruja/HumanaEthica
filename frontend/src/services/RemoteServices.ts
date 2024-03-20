@@ -483,6 +483,19 @@ export default class RemoteServices {
       });
   }
 
+  static async getVolunteerEnrollments(userId: number) {
+    return httpClient
+      .get('/activities/enrollments')
+      .then((response) => {
+        return response.data.map((enrollment: any) => {
+          return new Enrollment(enrollment);
+        });
+      })
+      .catch(async (error) => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   // Assessment Controller
 
   static async getInstitutionAssessments(
