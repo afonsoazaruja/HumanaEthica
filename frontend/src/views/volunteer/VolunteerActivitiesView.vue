@@ -61,7 +61,7 @@
                 v-on="on"
                 data-cy="writeAssessmentButton"
                 @click="writeAssessment(item)"
-                >edit</v-icon
+                >fa-edit</v-icon
               >
             </template>
             <span>Write Assessment</span>
@@ -80,7 +80,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import  {Component, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
 import Activity from '@/models/activity/Activity';
 import Enrollment from '@/models/enrollment/Enrollment';
