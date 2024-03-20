@@ -13,4 +13,7 @@ import java.util.List;
 public interface AssessmentRepository extends JpaRepository<Assessment, Integer> {
     @Query("SELECT a FROM Assessment a WHERE a.institution.id = :institutionId")
     List<Assessment> getAssessmentsByInstitutionId(Integer institutionId);
+
+    @Query("SELECT a FROM Assessment a WHERE a.volunteer.id = :userId")
+    List<Assessment> getAssessmentsByVolunteerId(Integer userId);
 }
