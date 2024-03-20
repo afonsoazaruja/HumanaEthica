@@ -22,7 +22,7 @@ public class AssessmentController {
         return assessmentService.getAssessmentsByInstitution(institutionId);
     }
 
-    @GetMapping("/assessments")
+    @GetMapping("/assessments/volunteer")
     @PreAuthorize("(hasRole('ROLE_VOLUNTEER'))")
     public List<AssessmentDto> getVolunteerAssessments(Principal principal) {
         int userId = ((AuthUser) ((Authentication) principal).getPrincipal()).getUser().getId();

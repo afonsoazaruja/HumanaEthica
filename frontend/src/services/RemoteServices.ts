@@ -500,20 +500,17 @@ export default class RemoteServices {
       });
   }
 
-  static async getVolunteerAssessments(
-      institutionId: number | null,
-      userId: number | null,
-  ): Promise<Assessment[]> {
+  static async getVolunteerAssessments(): Promise<Assessment[]> {
     return httpClient
-        .get(`/institutions`)
-        .then((response) => {
-          return response.data.map((assessment: any) => {
-            return new Assessment(assessment);
-          });
-        })
-        .catch(async (error) => {
-          throw Error(await this.errorMessage(error));
+      .get('/assessments/volunteer')
+      .then((response) => {
+        return response.data.map((assessment: any) => {
+          return new Assessment(assessment);
         });
+      })
+      .catch(async (error) => {
+        throw Error(await this.errorMessage(error));
+      });
   }
 
   // Theme Controller
