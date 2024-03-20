@@ -40,6 +40,18 @@
             </template>
             <span>Report Activity</span>
           </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-icon
+                class="mr-2 action-button"
+                color="blue"
+                v-on="on"
+                data-cy="applyActivityButton"
+                @click="applyToActivity(item)"
+                >login</v-icon
+              >
+            </template>
+          </v-tooltip>
         </template>
       </v-data-table>
     </v-card>
@@ -121,6 +133,10 @@ export default class VolunteerActivitiesView extends Vue {
       width: '5%',
     },
   ];
+
+  async applyToActivity(activity: Activity) {
+    //TODO: IMPLEMENT
+  }
 
   async created() {
     await this.$store.dispatch('loading');
