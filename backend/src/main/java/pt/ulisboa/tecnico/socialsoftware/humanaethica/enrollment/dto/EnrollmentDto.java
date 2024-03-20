@@ -8,6 +8,7 @@ public class EnrollmentDto {
     private String motivation;
     private String enrollmentDateTime;
     private String volunteerName;
+    private boolean participating;
 
     public EnrollmentDto() {}
 
@@ -16,6 +17,10 @@ public class EnrollmentDto {
         this.motivation = enrollment.getMotivation();
         this.enrollmentDateTime = DateHandler.toISOString(enrollment.getEnrollmentDateTime());
         this.volunteerName = enrollment.getVolunteer().getName();
+        this.participating = enrollment.getActivity().getParticipations()
+                .stream()
+                .anyMatch(participation -> participation.getVolunteer().getName().equals(volunteerName));
+
     }
 
     public Integer getId() {
@@ -48,5 +53,13 @@ public class EnrollmentDto {
 
     public void setVolunteerName(String volunteerName) {
         this.volunteerName = volunteerName;
+    }
+
+    public boolean isParticipating() {
+        return participating;
+    }
+
+    public void setParticipating(boolean participating) {
+        this.participating = participating;
     }
 }
