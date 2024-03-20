@@ -28,6 +28,20 @@
           >
         </v-card-title>
       </template>
+      <template v-slot:[`item.action`]="{ item }">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-icon
+              color="primary"
+              class="mr-2 action-button"
+              @click="participate(item)"
+              v-on="on"
+              >person
+            </v-icon>
+          </template>
+          <span>Select Participant</span>
+        </v-tooltip>
+      </template>
     </v-data-table>
   </v-card>
 </template>
@@ -63,6 +77,13 @@ export default class InstitutionActivityEnrollmentsView extends Vue {
       align: 'left',
       width: '5%',
     },
+    {
+      text: 'Actions',
+      value: 'action',
+      align: 'left',
+      sortable: false,
+      width: '5%',
+    },
   ];
 
   async created() {
@@ -83,6 +104,10 @@ export default class InstitutionActivityEnrollmentsView extends Vue {
   async getActivities() {
     await this.$store.dispatch('setActivity', null);
     this.$router.push({ name: 'institution-activities' }).catch(() => {});
+  }
+
+  async participate(enrollment: Enrollment) {
+
   }
 }
 </script>
