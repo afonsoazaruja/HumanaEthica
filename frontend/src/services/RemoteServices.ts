@@ -412,6 +412,17 @@ export default class RemoteServices {
       });
   }
 
+  static async registerParticipation(participation: Participation) {
+    return httpClient
+      .post('/activities/{activityId}/participations', participation)
+      .then((response) => {
+        return new Participation(response.data);
+      })
+      .catch(async (error) => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
+
   static async getActivities(): Promise<Activity[]> {
     return httpClient
       .get('/activities')
