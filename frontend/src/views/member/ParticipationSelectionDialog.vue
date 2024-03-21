@@ -12,6 +12,10 @@
             <v-col cols="12" sm="6" md="4">
               <v-text-field
                 label="Rating"
+                :rules="[
+                  (v) =>
+                    isInputValid(v) || 'No Rating or Rating between 1 and 5',
+                ]"
                 v-model="participation.rating"
                 data-cy="ratingInput"
               ></v-text-field>
@@ -70,6 +74,16 @@ export default class ParticipationSelectionDialog extends Vue {
     );
   }
 
+  isInputValid(value: any) {
+    if (value == null) return true;
+    return this.isNumberValid(value);
+  }
+
+  isNumberValid(value: any) {
+    if (!/^\d+$/.test(value)) return false;
+    const parsedValue = parseInt(value);
+    return parsedValue >= 1 && parsedValue <= 5;
+  }
 
   async registerParticipation() {
     if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
