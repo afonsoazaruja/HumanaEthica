@@ -29,7 +29,7 @@
         </v-card-title>
       </template>
       <template v-slot:[`item.action`]="{ item }">
-        <v-tooltip bottom>
+        <v-tooltip v-if="!item.participating" bottom>
           <template v-slot:activator="{ on }">
             <v-icon
               color="primary"
