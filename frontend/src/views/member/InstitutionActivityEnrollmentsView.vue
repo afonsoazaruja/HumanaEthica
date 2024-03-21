@@ -43,6 +43,14 @@
         </v-tooltip>
       </template>
     </v-data-table>
+    <participation-selection-dialog
+      v-if="currentEnrollment && editParticipationSelectionDialog"
+      v-model="editParticipationSelectionDialog"
+      v-on:save-participation-selection-dialog="onSaveParticipationSelection"
+      v-on:close-participation-selection-dialog="
+        onCloseParticipationSelectionDialog
+      "
+    />
   </v-card>
 </template>
 
@@ -51,12 +59,21 @@ import { Component, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
 import Activity from '@/models/activity/Activity';
 import Enrollment from '@/models/enrollment/Enrollment';
+import ParticipationSelectionDialog from '@/views/member/ParticipationSelectionDialog.vue';
+import Participation from "@/models/participation/Participation";
 
-@Component({})
+@Component({
+  components: {
+    'participation-selection-dialog': ParticipationSelectionDialog
+  },
+})
 export default class InstitutionActivityEnrollmentsView extends Vue {
   activity!: Activity;
   enrollments: Enrollment[] = [];
   search: string = '';
+
+  currentEnrollment: Enrollment | null = null;
+  editParticipationSelectionDialog: boolean = false;
 
   headers: object = [
     {
@@ -113,8 +130,21 @@ export default class InstitutionActivityEnrollmentsView extends Vue {
   }
 
   async participate(enrollment: Enrollment) {
-
+    this.currentEnrollment = enrollment;
+    this.editParticipationSelectionDialog = true;
   }
+
+  async onCloseParticipationSelectionDialog() {
+    this.currentEnrollment = null;
+    this.editParticipationSelectionDialog = false;
+  }
+
+  async onSaveParticipationSelection() {
+    this.enrollments.unshift();
+    this.editParticipationSelectionDialog = false;
+    this.currentEnrollment = null;
+  }
+
 }
 </script>
 
