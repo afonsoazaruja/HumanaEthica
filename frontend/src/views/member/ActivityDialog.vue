@@ -13,7 +13,7 @@
       <v-card-text>
         <v-form ref="form" lazy-validation>
           <v-row>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="4">z
               <v-text-field
                 label="*Name"
                 :rules="[(v) => !!v || 'Activity name is required']"
