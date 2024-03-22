@@ -40,7 +40,7 @@
             </template>
             <span>Report Activity</span>
           </v-tooltip>
-          <v-tooltip bottom>
+          <v-tooltip v-if="canApplyForActivity(item)" bottom>
             <template v-slot:activator="{ on }">
               <v-icon
                 class="mr-2 action-button"
@@ -150,6 +150,10 @@ export default class VolunteerActivitiesView extends Vue {
       width: '5%',
     },
   ];
+
+  canApplyForActivity(activity: Activity) {
+    return new Date() < new Date(activity.applicationDeadline);
+  }
 
   applyForActivity(activity: Activity) {
     this.currentActivity = activity;
