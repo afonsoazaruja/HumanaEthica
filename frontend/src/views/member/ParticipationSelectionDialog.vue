@@ -75,7 +75,7 @@ export default class ParticipationSelectionDialog extends Vue {
   }
 
   isInputValid(value: any) {
-    if (value == null) return true;
+    if (value == null || value == '') return true;
     return this.isNumberValid(value);
   }
 
