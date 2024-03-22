@@ -113,6 +113,7 @@
     </v-card>
   </v-dialog>
 </template>
+
 <script lang="ts">
 import { Vue, Component, Prop, Model } from 'vue-property-decorator';
 import Activity from '@/models/activity/Activity';

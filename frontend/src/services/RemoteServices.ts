@@ -626,8 +626,18 @@ export default class RemoteServices {
       });
   }
 
-  // Error
+  static async registerAssessment(userId: number | null, assessment: string) {
+    return httpClient
+      .post('/assessments', assessment)
+      .then((response) => {
+        return new Assessment(response.data);
+      })
+      .catch(async (error) => {
+        throw Error(await this.errorMessage(error));
+      });
+  }
 
+  // Error
   static async errorMessage(error: any): Promise<string> {
     if (error.message === 'Network Error') {
       return 'Unable to connect to server';
