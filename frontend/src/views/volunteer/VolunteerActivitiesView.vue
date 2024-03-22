@@ -44,16 +44,24 @@
             <template v-slot:activator="{ on }">
               <v-icon
                 class="mr-2 action-button"
+                @click="applyForActivity(item)"
                 color="blue"
                 v-on="on"
-                data-cy="applyActivityButton"
-                @click="applyToActivity(item)"
+                data-cy="applyForActivityButton"
                 >login</v-icon
               >
             </template>
+            <span>Apply for Activity</span>
           </v-tooltip>
         </template>
       </v-data-table>
+      <enrollment-dialog
+        v-if="currentActivity && enrollmentDialog"
+        v-model="enrollmentDialog"
+        :activity="currentActivity"
+        v-on:create-enrollment="onCreateEnrollment"
+        v-on:close-enrollment-dialog="onCloseEnrollmentDialog"
+      />
     </v-card>
   </div>
 </template>
@@ -62,14 +70,23 @@
 import { Component, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
 import Activity from '@/models/activity/Activity';
+import Enrollment from '@/models/enrollment/Enrollment';
+import EnrollmentDialog from '@/views/volunteer/EnrollmentDialog.vue';
 import { show } from 'cli-cursor';
 
 @Component({
   methods: { show },
+  components: {
+    'enrollment-dialog': EnrollmentDialog,
+  },
 })
 export default class VolunteerActivitiesView extends Vue {
   activities: Activity[] = [];
   search: string = '';
+
+  currentActivity: Activity | null = null;
+  enrollmentDialog: boolean = false;
+
   headers: object = [
     {
       text: 'Name',
@@ -134,8 +151,19 @@ export default class VolunteerActivitiesView extends Vue {
     },
   ];
 
-  async applyToActivity(activity: Activity) {
-    //TODO: IMPLEMENT
+  applyForActivity(activity: Activity) {
+    this.currentActivity = activity;
+    this.enrollmentDialog = true;
+  }
+
+  onCloseEnrollmentDialog() {
+    this.currentActivity = null;
+    this.enrollmentDialog = false;
+  }
+
+  async onCreateEnrollment(enrollment: Enrollment) {
+    // save enrollment to db
+    this.onCloseEnrollmentDialog();
   }
 
   async created() {
