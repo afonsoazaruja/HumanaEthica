@@ -53,7 +53,7 @@
             </template>
             <span>Apply for Activity</span>
           </v-tooltip>
-          <v-tooltip bottom> <!-- add conditions to show button here -->
+          <v-tooltip bottom v-if="canShowWriteAssessmentButton(item)">
             <template v-slot:activator="{ on }">
               <v-icon
                 class="mr-2 action-button"
@@ -80,12 +80,14 @@
 </template>
 
 <script lang="ts">
-import  {Component, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
 import Activity from '@/models/activity/Activity';
 import Enrollment from '@/models/enrollment/Enrollment';
 import EnrollmentDialog from '@/views/volunteer/EnrollmentDialog.vue';
 import { show } from 'cli-cursor';
+import Assessment from '@/models/assessment/Assessment';
+import Participation from '@/models/participation/Participation';
 
 @Component({
   methods: { show },
@@ -96,6 +98,8 @@ import { show } from 'cli-cursor';
 export default class VolunteerActivitiesView extends Vue {
   enrollments: Enrollment[] = [];
   activities: Activity[] = [];
+  volunteerAssessments: Assessment[] = [];
+  volunteerParticipations: Participation[] = [];
   search: string = '';
 
   currentActivity: Activity | null = null;
@@ -194,6 +198,10 @@ export default class VolunteerActivitiesView extends Vue {
     await this.$store.dispatch('loading');
     try {
       this.activities = await RemoteServices.getActivities();
+      this.volunteerAssessments =
+        await RemoteServices.getVolunteerAssessments();
+      this.volunteerParticipations =
+        await RemoteServices.getVolunteerParticipations();
       this.enrollments = await RemoteServices.getVolunteerEnrollments();
     } catch (error) {
       await this.$store.dispatch('error', error);
@@ -218,6 +226,24 @@ export default class VolunteerActivitiesView extends Vue {
 
   async writeAssessment(activity: Activity) {
     // implement this
+  }
+
+  canShowWriteAssessmentButton(activity: Activity) {
+    if (new Date() < new Date(activity.endingDate)) {
+      return false;
+    }
+
+    if (
+      this.volunteerAssessments.some(
+        (a) => a.institutionId === activity.institution.id,
+      )
+    ) {
+      return false;
+    }
+
+    return this.volunteerParticipations.some(
+      (p) => p.activityId === activity.id,
+    );
   }
 }
 </script>
