@@ -29,7 +29,7 @@
         </v-card-title>
       </template>
       <template v-slot:[`item.action`]="{ item }">
-        <v-tooltip v-if="!item.participating" bottom>
+        <v-tooltip v-if="!item.participating && activity.hasVacancy" bottom>
           <template v-slot:activator="{ on }">
             <v-icon
               color="primary"
@@ -60,7 +60,7 @@ import RemoteServices from '@/services/RemoteServices';
 import Activity from '@/models/activity/Activity';
 import Enrollment from '@/models/enrollment/Enrollment';
 import ParticipationSelectionDialog from '@/views/member/ParticipationSelectionDialog.vue';
-import Participation from "@/models/participation/Participation";
+import Participation from '@/models/participation/Participation';
 
 @Component({
   components: {
@@ -144,7 +144,6 @@ export default class InstitutionActivityEnrollmentsView extends Vue {
     this.editParticipationSelectionDialog = false;
     this.currentEnrollment = null;
   }
-
 }
 </script>
 

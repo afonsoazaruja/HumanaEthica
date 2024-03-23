@@ -19,6 +19,7 @@ export default class Activity {
   formattedEndingDate!: string;
   applicationDeadline!: string;
   formattedApplicationDeadline!: string;
+  hasVacancy!: boolean;
 
   constructor(jsonObj?: Activity) {
     if (jsonObj) {
@@ -45,6 +46,7 @@ export default class Activity {
         this.formattedApplicationDeadline = ISOtoString(
           jsonObj.applicationDeadline,
         );
+      this.hasVacancy = jsonObj.hasVacancy;
     }
   }
 }
