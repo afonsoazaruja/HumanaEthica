@@ -81,6 +81,7 @@ import { show } from 'cli-cursor';
   },
 })
 export default class VolunteerActivitiesView extends Vue {
+  enrollments: Enrollment[] = [];
   activities: Activity[] = [];
   search: string = '';
 
@@ -166,7 +167,7 @@ export default class VolunteerActivitiesView extends Vue {
   }
 
   async onCreateEnrollment(enrollment: Enrollment) {
-    // save enrollment to db
+    this.enrollments.unshift(enrollment);
     this.onCloseEnrollmentDialog();
   }
 
