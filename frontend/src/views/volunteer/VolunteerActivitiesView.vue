@@ -40,7 +40,7 @@
             </template>
             <span>Report Activity</span>
           </v-tooltip>
-          <v-tooltip bottom> <!-- add conditions to show button here -->
+          <v-tooltip bottom v-if="canShowWriteAssessmentButton(item)">
             <template v-slot:activator="{ on }">
               <v-icon
                 class="mr-2 action-button"
@@ -64,12 +64,16 @@ import { Component, Vue } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
 import Activity from '@/models/activity/Activity';
 import { show } from 'cli-cursor';
+import Assessment from '@/models/assessment/Assessment';
+import Participation from '@/models/participation/Participation';
 
 @Component({
   methods: { show },
 })
 export default class VolunteerActivitiesView extends Vue {
   activities: Activity[] = [];
+  volunteerAssessments: Assessment[] = [];
+  volunteerParticipations: Participation[] = [];
   search: string = '';
   headers: object = [
     {
@@ -139,6 +143,10 @@ export default class VolunteerActivitiesView extends Vue {
     await this.$store.dispatch('loading');
     try {
       this.activities = await RemoteServices.getActivities();
+      this.volunteerAssessments =
+        await RemoteServices.getVolunteerAssessments();
+      this.volunteerParticipations =
+        await RemoteServices.getVolunteerParticipations();
     } catch (error) {
       await this.$store.dispatch('error', error);
     }
@@ -162,6 +170,24 @@ export default class VolunteerActivitiesView extends Vue {
 
   async writeAssessment(activity: Activity) {
     // implement this
+  }
+
+  canShowWriteAssessmentButton(activity: Activity) {
+    if (new Date() < new Date(activity.endingDate)) {
+      return false;
+    }
+
+    if (
+      this.volunteerAssessments.some(
+        (a) => a.institutionId === activity.institution.id,
+      )
+    ) {
+      return false;
+    }
+
+    return this.volunteerParticipations.some(
+      (p) => p.activityId === activity.id,
+    );
   }
 }
 </script>
