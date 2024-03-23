@@ -38,6 +38,9 @@ describe('Volunteer', () => {
     // go to show enrollments from first activity
     cy.get('[data-cy="showEnrollments"]').eq(0).click();
 
+    // check results - 2 enrollments on the table
+    cy.get('[data-cy="activityEnrollmentsTable"] tbody tr')
+        .should('have.length', NUM_ENROLLMENTS)
 
   });
 });
