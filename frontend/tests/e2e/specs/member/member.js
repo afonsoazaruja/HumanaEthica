@@ -30,6 +30,11 @@ describe('Volunteer', () => {
     // check results - 2 activities on the table
     cy.get('[data-cy="memberActivitiesTable"] tbody tr')
         .should('have.length', NUM_ACTIVITIES)
-    
+
+    // check results - first activity has 1 participation
+    cy.get('[data-cy="memberActivitiesTable"] tbody tr')
+        .eq(0).children().eq(6).should('contain', NUM_PARTICIPATIONS)
+
+
   });
 });
