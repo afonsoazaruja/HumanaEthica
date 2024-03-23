@@ -602,9 +602,12 @@ export default class RemoteServices {
       });
   }
 
-  static async registerAssessment(userId: number | null, assessment: Assessment) {
+  static async registerAssessment(
+    institutionId: number | null,
+    assessment: Assessment,
+  ) {
     return httpClient
-      .post('/assessments', assessment)
+      .post(`/institutions/${institutionId}/assessments`, assessment)
       .then((response) => {
         return new Assessment(response.data);
       })

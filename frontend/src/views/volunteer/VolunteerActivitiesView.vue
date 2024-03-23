@@ -46,8 +46,7 @@
                 class="mr-2 action-button"
                 color="blue"
                 v-on="on"
-                data-cy="writeAssessmentButton"
-                @click="writeAssessment(item)"
+                @click="newAssessment(item)"
                 >fa-edit</v-icon
               >
             </template>
@@ -55,6 +54,13 @@
           </v-tooltip>
         </template>
       </v-data-table>
+      <assessment-dialog
+        v-if="currentActivity && assessmentDialog"
+        v-model="assessmentDialog"
+        :activity="currentActivity"
+        v-on:save-assessment="onSaveAssessment"
+        v-on:close-assessment-dialog="onCloseAssessmentDialog"
+      />
     </v-card>
   </div>
 </template>
@@ -66,14 +72,22 @@ import Activity from '@/models/activity/Activity';
 import { show } from 'cli-cursor';
 import Assessment from '@/models/assessment/Assessment';
 import Participation from '@/models/participation/Participation';
+import AssessmentDialog from '@/views/volunteer/AssessmentDialog.vue';
 
 @Component({
   methods: { show },
+  components: {
+    'assessment-dialog': AssessmentDialog,
+  },
 })
 export default class VolunteerActivitiesView extends Vue {
   activities: Activity[] = [];
   volunteerAssessments: Assessment[] = [];
   volunteerParticipations: Participation[] = [];
+
+  currentActivity: Activity | null = null;
+  assessmentDialog: boolean = false;
+
   search: string = '';
   headers: object = [
     {
@@ -168,8 +182,19 @@ export default class VolunteerActivitiesView extends Vue {
     }
   }
 
-  async writeAssessment(activity: Activity) {
-    // implement this
+  newAssessment(activity: Activity) {
+    this.currentActivity = activity;
+    this.assessmentDialog = true;
+  }
+
+  onCloseAssessmentDialog() {
+    this.currentActivity = null;
+    this.assessmentDialog = false;
+  }
+
+  async onSaveAssessment() {
+    this.currentActivity = null;
+    this.assessmentDialog = false;
   }
 
   canShowWriteAssessmentButton(activity: Activity) {
