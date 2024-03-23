@@ -412,9 +412,9 @@ export default class RemoteServices {
       });
   }
 
-  static async registerParticipation(participation: Participation) {
+  static async registerParticipation(activityId: number, participation: Participation) {
     return httpClient
-      .post('/activities/{activityId}/participations', participation)
+      .post(`/activities/${activityId}/participations`,participation)
       .then((response) => {
         return new Participation(response.data);
       })
