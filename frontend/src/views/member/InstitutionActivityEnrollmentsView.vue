@@ -46,6 +46,8 @@
     <participation-selection-dialog
       v-if="currentEnrollment && editParticipationSelectionDialog"
       v-model="editParticipationSelectionDialog"
+      :activity="activity"
+      :enrollment="currentEnrollment"
       v-on:save-participation-selection-dialog="onSaveParticipationSelection"
       v-on:close-participation-selection-dialog="
         onCloseParticipationSelectionDialog
@@ -64,7 +66,7 @@ import Participation from '@/models/participation/Participation';
 
 @Component({
   components: {
-    'participation-selection-dialog': ParticipationSelectionDialog
+    'participation-selection-dialog': ParticipationSelectionDialog,
   },
 })
 export default class InstitutionActivityEnrollmentsView extends Vue {
@@ -140,7 +142,16 @@ export default class InstitutionActivityEnrollmentsView extends Vue {
   }
 
   async onSaveParticipationSelection() {
-    this.enrollments.unshift();
+    // implement saving the participation and updating the enrollment
+    this.enrollments = this.enrollments.filter(
+      (a) => a.id !== this.currentEnrollment?.id,
+    );
+
+    if(this.currentEnrollment != null) {
+      this.currentEnrollment.participating = true;
+      this.enrollments.unshift(this.currentEnrollment);
+    }
+    // Close the dialog and reset currentEnrollment
     this.editParticipationSelectionDialog = false;
     this.currentEnrollment = null;
   }

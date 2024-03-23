@@ -16,7 +16,7 @@
                   (v) =>
                     isInputValid(v) || 'No Rating or Rating between 1 and 5',
                 ]"
-                v-model="participation.rating"
+                v-model="newParticipation.rating"
                 data-cy="ratingInput"
               ></v-text-field>
             </v-col>
@@ -50,28 +50,26 @@
 import {Vue, Component, Model, Prop} from 'vue-property-decorator';
 import Participation from '@/models/participation/Participation';
 import RemoteServices from '@/services/RemoteServices';
+import Activity from '@/models/activity/Activity';
+import Enrollment from '@/models/enrollment/Enrollment';
 
 @Component({})
 export default class ParticipationSelectionDialog extends Vue {
   @Model('dialog', Boolean) dialog!: boolean;
+  @Prop({ type: Activity, required: true }) readonly activity!: Activity;
+  @Prop({ type: Enrollment, required: true }) readonly enrollment!: Enrollment;
 
-  participation: Participation = new Participation();
+  newParticipation: Participation = new Participation();
 
   cypressCondition: boolean = false;
 
   async created() {
-    this.participation = new Participation();
+    this.newParticipation.activityId = this.activity.id;
+    this.newParticipation.volunteerId = this.enrollment.volunteerId;
   }
 
   get canSave(): boolean {
-    return (
-      this.cypressCondition ||
-      (!!this.participation.id &&
-        !!this.participation.rating &&
-        !!this.participation.acceptanceDate &&
-        !!this.participation.volunteerId &&
-        !!this.participation.activityId)
-    );
+    return this.cypressCondition || !!this.newParticipation.rating;
   }
 
   isInputValid(value: any) {
@@ -86,10 +84,14 @@ export default class ParticipationSelectionDialog extends Vue {
   }
 
   async registerParticipation() {
-    if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
+    if (
+      this.newParticipation.activityId != null &&
+      (this.$refs.form as Vue & { validate: () => boolean }).validate()
+    ) {
       try {
         const result = await RemoteServices.registerParticipation(
-          this.participation,
+          this.newParticipation.activityId,
+          this.newParticipation,
         );
         this.$emit('save-participation-selection-dialog', result);
       } catch (error) {
