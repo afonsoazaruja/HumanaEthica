@@ -35,6 +35,9 @@ describe('Volunteer', () => {
     cy.get('[data-cy="memberActivitiesTable"] tbody tr')
         .eq(0).children().eq(6).should('contain', NUM_PARTICIPATIONS)
 
+    // go to show enrollments from first activity
+    cy.get('[data-cy="showEnrollments"]').eq(0).click();
+
 
   });
 });
