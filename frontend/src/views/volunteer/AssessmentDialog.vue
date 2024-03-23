@@ -12,7 +12,11 @@
             <v-col cols="12" sm="6" md="4">
               <v-text-field
                 label="*Review"
-                :rules="[(v) => !!v || 'Review is required']"
+                :rules="[
+                  (v) =>
+                    isReviewValid(v) ||
+                    'Review is required (minimum 10 characters)',
+                ]"
                 required
                 v-model="assessment.review"
                 data-cy="reviewInput"
@@ -31,7 +35,6 @@
           Close
         </v-btn>
         <v-btn
-          v-if="assessment.review.length >= 10"
           color="blue-darken-1"
           variant="text"
           @click="createAssessment"
@@ -45,18 +48,23 @@
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Model } from 'vue-property-decorator';
-import Theme from '@/models/theme/Theme';
+import { Vue, Model, Component, Prop } from 'vue-property-decorator';
 import RemoteServices from '@/services/RemoteServices';
-import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
 import Assessment from '@/models/assessment/Assessment';
+import Activity from '@/models/activity/Activity';
 
+@Component({})
 export default class AssessmentDialog extends Vue {
   @Model('dialog', Boolean) dialog!: boolean;
-  @Prop({ type: Array, required: true }) readonly themes!: Theme[];
+  @Prop({ type: Activity, required: true }) readonly activity!: Activity;
 
   assessment: Assessment = new Assessment();
+
   cypressCondition: boolean = false;
+
+  isReviewValid(value: any) {
+    return typeof value === 'string' && value.trim().length >= 10;
+  }
 
   get canSave(): boolean {
     return this.cypressCondition || !!this.assessment.review;
@@ -66,7 +74,7 @@ export default class AssessmentDialog extends Vue {
     if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
       try {
         const result = await RemoteServices.registerAssessment(
-          this.assessment.id,
+          this.activity.institution.id,
           this.assessment,
         );
         this.$emit('save-assessment', result);
