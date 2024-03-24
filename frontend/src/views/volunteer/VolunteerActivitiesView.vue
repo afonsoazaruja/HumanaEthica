@@ -153,7 +153,13 @@ export default class VolunteerActivitiesView extends Vue {
   ];
 
   canApplyForActivity(activity: Activity) {
-    return new Date() < new Date(activity.applicationDeadline);
+    if (new Date() > new Date(activity.applicationDeadline)) return false;
+
+    return (
+      this.enrollments.find(
+        (enrollment) => enrollment.activityId == activity.id,
+      ) === undefined
+    );
   }
 
   applyForActivity(activity: Activity) {
