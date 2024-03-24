@@ -496,7 +496,7 @@ export default class RemoteServices {
 
   static async getVolunteerEnrollments() {
     return httpClient
-      .get('/activities/enrollments')
+      .get('/enrollments/volunteer')
       .then((response) => {
         return response.data.map((enrollment: any) => {
           return new Enrollment(enrollment);
