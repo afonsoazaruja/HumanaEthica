@@ -25,9 +25,17 @@ dayBeforeYesterday.setDate(now.getDate() - 2);
 
 Cypress.Commands.add('deleteAllButArs', () => {
   cy.task('queryDatabase', {
+    query: "DELETE FROM ENROLLMENT",
+    credentials: credentials,
+  });
+  cy.task('queryDatabase', {
+    query: "DELETE FROM PARTICIPATION",
+    credentials: credentials,
+  });
+  cy.task('queryDatabase', {
     query: "DELETE FROM ACTIVITY",
     credentials: credentials,
-  })
+  });
   cy.task('queryDatabase', {
     query: "DELETE FROM AUTH_USERS WHERE NOT (username = 'ars')",
     credentials: credentials,
@@ -65,7 +73,7 @@ Cypress.Commands.add('createDemoEntities', () => {
   })
 });
 
-Cypress.Commands.add('prepareAssessmentsTest', () => {
+Cypress.Commands.add('prepareAssessmentTest', () => {
   // institutions
   cy.task('queryDatabase', {
     query: "INSERT INTO " + INSTITUTION_COLUMNS + generateAssessmentInstitutionTuple(1, "DEMO INSTITUTION", "000000000"),
@@ -148,7 +156,7 @@ Cypress.Commands.add('prepareAssessmentsTest', () => {
     query: "INSERT INTO " + PARTICIPATION_COLUMNS + generateAssessmentParticipationTuple(3, 6, 3),
     credentials: credentials,
   })
-})
+});
 
 function generateAuthUserTuple(id, authType, username, userId) {
   return "VALUES ('"
@@ -187,15 +195,15 @@ function generateAssessmentUserTuple(userType, id, creation_date, name, role, in
     + id + "', '"
     + creation_date + "', '"
     + name + "', '"
-    + role + "', 'ACTIVE', '"
-    + institutionId + "')";
+    + role + "', 'ACTIVE', "
+    + institutionId + ")";
 }
 
 function generateAssessmentAuthUserTuple(id, email, username, userId) {
   return "VALUES ('DEMO', '"
       + id + "', 't', '"
-      + email + "', 'NULL', 'NULL', '"
-      + username + "', 'NULL', 'NULL', '"
+      + email + "', '"
+      + username + "', '"
       + userId + "')";
 }
 
@@ -204,8 +212,8 @@ function generateAssessmentActivityTuple(id, description, name, participantNumbe
     + id + "', '2024-02-06 17:58:21.402146', '2024-02-06 17:58:21.402146', '"
     + description + "', '2024-02-08 10:58:21.402146', '"
     + name + "', '"
-    + participantNumberLimit + "', 'Lisbon', '2024-02-07 17:58:21.402146', 'APPROVED', '"
-    + institutionId + "')";
+    + participantNumberLimit + "', 'Lisbon', '2024-02-07 17:58:21.402146', 'APPROVED', "
+    + institutionId + ")";
 }
 
 function generateAssessmentEnrollmentTuple(id, activityId, volunteerId) {
