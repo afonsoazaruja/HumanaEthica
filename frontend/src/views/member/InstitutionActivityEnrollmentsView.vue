@@ -36,6 +36,7 @@
               class="mr-2 action-button"
               @click="participate(item)"
               v-on="on"
+              data-cy="selectParticipant"
               >person
             </v-icon>
           </template>
