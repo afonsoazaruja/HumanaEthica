@@ -10,6 +10,7 @@ const ACTIVITY_COLUMNS = "activity (id, application_deadline, creation_date, des
 const INSTITUTION_COLUMNS = "institutions (id, active, confirmation_token, creation_date, email, name, nif, token_generation_date)";
 const USER_COLUMNS = "users (user_type, id, creation_date, name, role, state, institution_id)";
 const AUTH_USERS_COLUMNS = "auth_users (auth_type, id, active, email, username, user_id)";
+const ENROLLMENT_COLUMNS = "enrollment (id, enrollment_date_time, motivation, activity_id, volunteer_id)";
 
 const now = new Date();
 const tomorrow = new Date(now);
@@ -51,6 +52,13 @@ Cypress.Commands.add('createActivities', () => {
   })
   cy.task('queryDatabase', {
     query: "INSERT INTO " + ACTIVITY_COLUMNS + generateActivityTuple(3, "2024-02-06 17:58:21.402146", "2024-08-06 17:58:21.402146",	"Enrollment is closed", "2024-08-08 17:58:21.402146",	"A3", 3, "LISBON", "2024-08-07 17:58:21.402146", "APPROVED", 1),
+    credentials: credentials,
+  })
+})
+
+Cypress.Commands.add('enroll', () => {
+  cy.task('queryDatabase', {
+    query: "INSERT INTO " + ENROLLMENT_COLUMNS + generateEnrollmentTuple(5,	"2024-02-06 18:51:37.595713",	"sql-inserted-motivation", "2",	"3"),
     credentials: credentials,
   })
 })
@@ -113,4 +121,13 @@ function generateActivityTuple(id, application_deadline, create_date, descriptio
     + starting_date + "', '" 
     + state + "', '"
     + institution_id + "')";
+}
+
+function generateEnrollmentTuple(id, enrollment_date_time, motivation, activity_id, volunteer_id) {
+  return "VALUES ('"
+    + id + "', '"
+    + enrollment_date_time + "', '"
+    + motivation + "', '"
+    + activity_id + "', '"
+    + volunteer_id + "')";
 }
