@@ -25,7 +25,7 @@ describe('Enrollments', () => {
             .eq(3)
             .should('contain',0);
     })
-    it('as a volunteer apply to the first activity', () =>{
+    it('as a volunteer apply to the first activity and check if the application exists as a member', () =>{
         const MOTIVATION = "valid motivation"
         cy.demoVolunteerLogin();
         cy.get('[data-cy="volunteerActivities"]').click();
@@ -35,7 +35,16 @@ describe('Enrollments', () => {
         cy.get('[data-cy="motivationInput"]').type(MOTIVATION);
         cy.get('[data-cy="saveActivity"]').click();
 
-        
-      })
+        cy.logout()
+        cy.demoMemberLogin()
+        cy.get('[data-cy="institution"]').click();
+        cy.get('[data-cy="activities"]').click();
 
+        cy.get('[data-cy="memberActivitiesTable"] tbody tr')
+            .eq(0)
+            .children()
+            .eq(3)
+            .should('contain',1);
+
+    })
   });
