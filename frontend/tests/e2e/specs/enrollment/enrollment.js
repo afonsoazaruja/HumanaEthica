@@ -33,7 +33,7 @@ describe('Enrollments', () => {
     cy.get('[data-cy="applyButton"]').click();
     cy.logout();
 
-    cy.demoMemberLogin()
+    cy.demoMemberLogin();
     cy.get('[data-cy="institution"]').click();
     cy.get('[data-cy="activities"]').click();
     cy.wait('@getInstitutions');
