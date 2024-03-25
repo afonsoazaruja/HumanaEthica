@@ -29,7 +29,7 @@
         </v-card-title>
       </template>
       <template v-slot:[`item.action`]="{ item }">
-        <v-tooltip v-if="!item.participating && activity.hasVacancy" bottom>
+        <v-tooltip v-if="!item.participating && hasVacancy()" bottom>
           <template v-slot:activator="{ on }">
             <v-icon
               color="primary"
@@ -46,8 +46,7 @@
     <participation-selection-dialog
       v-if="currentEnrollment && editParticipationSelectionDialog"
       v-model="editParticipationSelectionDialog"
-      :activity="activity"
-      :enrollment="currentEnrollment"
+      :participation="newParticipation"
       v-on:save-participation-selection-dialog="onSaveParticipationSelection"
       v-on:close-participation-selection-dialog="
         onCloseParticipationSelectionDialog
@@ -75,6 +74,8 @@ export default class InstitutionActivityEnrollmentsView extends Vue {
   search: string = '';
 
   currentEnrollment: Enrollment | null = null;
+  newParticipation: Participation | null = null;
+
   editParticipationSelectionDialog: boolean = false;
 
   headers: object = [
@@ -133,11 +134,15 @@ export default class InstitutionActivityEnrollmentsView extends Vue {
 
   async participate(enrollment: Enrollment) {
     this.currentEnrollment = enrollment;
+    this.newParticipation = new Participation();
+    this.newParticipation.activityId = this.activity.id;
+    this.newParticipation.volunteerId = enrollment.volunteerId;
     this.editParticipationSelectionDialog = true;
   }
 
   async onCloseParticipationSelectionDialog() {
     this.currentEnrollment = null;
+    this.newParticipation = null;
     this.editParticipationSelectionDialog = false;
   }
 
@@ -147,6 +152,8 @@ export default class InstitutionActivityEnrollmentsView extends Vue {
       (a) => a.id !== this.currentEnrollment?.id,
     );
 
+
+
     if (this.currentEnrollment != null) {
       this.currentEnrollment.participating = true;
       this.enrollments.unshift(this.currentEnrollment);
@@ -154,6 +161,14 @@ export default class InstitutionActivityEnrollmentsView extends Vue {
     // Close the dialog and reset currentEnrollment
     this.editParticipationSelectionDialog = false;
     this.currentEnrollment = null;
+    this.newParticipation = null;
+    this.activity.numberOfParticipants++;
+  }
+
+  hasVacancy() {
+    return (
+      this.activity.numberOfParticipants < this.activity.participantsNumberLimit
+    );
   }
 }
 </script>

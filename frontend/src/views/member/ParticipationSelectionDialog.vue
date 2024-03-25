@@ -56,16 +56,15 @@ import Enrollment from '@/models/enrollment/Enrollment';
 @Component({})
 export default class ParticipationSelectionDialog extends Vue {
   @Model('dialog', Boolean) dialog!: boolean;
-  @Prop({ type: Activity, required: true }) readonly activity!: Activity;
-  @Prop({ type: Enrollment, required: true }) readonly enrollment!: Enrollment;
+  @Prop({ type: Participation, required: true }) readonly participation!: Participation;
+
 
   newParticipation: Participation = new Participation();
 
   cypressCondition: boolean = false;
 
   async created() {
-    this.newParticipation.activityId = this.activity.id;
-    this.newParticipation.volunteerId = this.enrollment.volunteerId;
+    this.newParticipation = new Participation(this.participation);
   }
 
   get canSave(): boolean {

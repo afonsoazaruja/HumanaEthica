@@ -21,7 +21,6 @@ public class ActivityDto {
     private String creationDate;
     private List<ThemeDto> themes;
     private InstitutionDto institution;
-    private boolean hasVacancy;
 
     public ActivityDto(){
     }
@@ -47,8 +46,6 @@ public class ActivityDto {
                 setInstitution(new InstitutionDto(activity.getInstitution(), false, false));
 
         }
-
-        setHasVacancy(activity.getNumberOfParticipatingVolunteers() < activity.getParticipantsNumberLimit());
     }
 
     public void setThemes(List<ThemeDto> themes) {
@@ -151,14 +148,6 @@ public class ActivityDto {
 
     public void setParticipantsNumberLimit(Integer participantsNumberLimit) {
         this.participantsNumberLimit = participantsNumberLimit;
-    }
-
-    public boolean isHasVacancy() {
-        return hasVacancy;
-    }
-
-    public void setHasVacancy(boolean hasVacancy) {
-        this.hasVacancy = hasVacancy;
     }
 
     @Override
