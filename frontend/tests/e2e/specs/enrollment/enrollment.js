@@ -14,6 +14,7 @@ describe('Enrollment', () => {
         const NUM_ACTIVITIES = '2';
         const NUM_PARTICIPATIONS = '1';
         const NUM_ENROLLMENTS = '2';
+        const RATING = '5';
 
         // go to activities table
         cy.get('[data-cy="institution"]').click();
@@ -37,6 +38,10 @@ describe('Enrollment', () => {
         // check the first enrollment has the Participating column as false
         cy.get('[data-cy="activityEnrollmentsTable"] tbody tr')
             .eq(0).children().eq(2).should('contain', 'false')
+        // create participant
+        cy.get('[data-cy="selectParticipant"]').click();
+        cy.get('[data-cy="ratingInput"]').type(RATING);
+        cy.get('[data-cy="saveParticipation"]').click();
     });
 });
 
