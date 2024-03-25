@@ -6,10 +6,10 @@ const credentials = {
   port: Cypress.env('psql_db_port'),
 };
 
-const ACTIVITY_COLUMNS = "activity (id, application_deadline, creation_date, description, ending_date, name, participants_number_limit, region, starting_date, state, institution_id)";
 const INSTITUTION_COLUMNS = "institutions (id, active, confirmation_token, creation_date, email, name, nif, token_generation_date)";
 const USER_COLUMNS = "users (user_type, id, creation_date, name, role, state, institution_id)";
 const AUTH_USERS_COLUMNS = "auth_users (auth_type, id, active, email, username, user_id)";
+const ACTIVITY_COLUMNS = "activity (id, application_deadline, creation_date, description, ending_date, name, participants_number_limit, region, starting_date, state, institution_id)";
 const ENROLLMENT_COLUMNS = "enrollment (id, enrollment_date_time, motivation, activity_id, volunteer_id)";
 const PARTICIPATION_COLUMNS = "participation (id, acceptance_date, rating, activity_id, volunteer_id)";
 
@@ -27,11 +27,15 @@ Cypress.Commands.add('deleteAllButArs', () => {
   cy.task('queryDatabase', {
     query: "DELETE FROM ENROLLMENT",
     credentials: credentials,
-  })
+  });
+  cy.task('queryDatabase', {
+    query: "DELETE FROM PARTICIPATION",
+    credentials: credentials,
+  });
   cy.task('queryDatabase', {
     query: "DELETE FROM ACTIVITY",
     credentials: credentials,
-  })
+  });
   cy.task('queryDatabase', {
     query: "DELETE FROM AUTH_USERS WHERE NOT (username = 'ars')",
     credentials: credentials,
@@ -91,7 +95,7 @@ Cypress.Commands.add('createDemoEntities', () => {
   })
 });
 
-Cypress.Commands.add('prepareAssessmentsTest', () => {
+Cypress.Commands.add('prepareAssessmentTest', () => {
   // institutions
   cy.task('queryDatabase', {
     query: "INSERT INTO " + INSTITUTION_COLUMNS + generateAssessmentInstitutionTuple(1, "DEMO INSTITUTION", "000000000"),
@@ -174,7 +178,7 @@ Cypress.Commands.add('prepareAssessmentsTest', () => {
     query: "INSERT INTO " + PARTICIPATION_COLUMNS + generateAssessmentParticipationTuple(3, 6, 3),
     credentials: credentials,
   })
-})
+});
 
 function generateAuthUserTuple(id, authType, username, userId) {
   return "VALUES ('"
@@ -237,15 +241,15 @@ function generateAssessmentUserTuple(userType, id, creation_date, name, role, in
     + id + "', '"
     + creation_date + "', '"
     + name + "', '"
-    + role + "', 'ACTIVE', '"
-    + institutionId + "')";
+    + role + "', 'ACTIVE', "
+    + institutionId + ")";
 }
 
 function generateAssessmentAuthUserTuple(id, email, username, userId) {
   return "VALUES ('DEMO', '"
       + id + "', 't', '"
-      + email + "', 'NULL', 'NULL', '"
-      + username + "', 'NULL', 'NULL', '"
+      + email + "', '"
+      + username + "', '"
       + userId + "')";
 }
 
@@ -254,8 +258,8 @@ function generateAssessmentActivityTuple(id, description, name, participantNumbe
     + id + "', '2024-02-06 17:58:21.402146', '2024-02-06 17:58:21.402146', '"
     + description + "', '2024-02-08 10:58:21.402146', '"
     + name + "', '"
-    + participantNumberLimit + "', 'Lisbon', '2024-02-07 17:58:21.402146', 'APPROVED', '"
-    + institutionId + "')";
+    + participantNumberLimit + "', 'Lisbon', '2024-02-07 17:58:21.402146', 'APPROVED', "
+    + institutionId + ")";
 }
 
 function generateAssessmentEnrollmentTuple(id, activityId, volunteerId) {
