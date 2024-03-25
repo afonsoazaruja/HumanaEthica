@@ -6,7 +6,7 @@ const credentials = {
   port: Cypress.env('psql_db_port'),
 };
 
-const ACTIVITY_COLUMNS = "activities (id, deadline, creation_date, description, ending_date, name, participants_number_limit, region, starting_date, state, institution_id)";
+const ACTIVITY_COLUMNS = "activity (id, application_deadline, creation_date, description, ending_date, name, participants_number_limit, region, starting_date, state, institution_id)";
 const INSTITUTION_COLUMNS = "institutions (id, active, confirmation_token, creation_date, email, name, nif, token_generation_date)";
 const USER_COLUMNS = "users (user_type, id, creation_date, name, role, state, institution_id)";
 const AUTH_USERS_COLUMNS = "auth_users (auth_type, id, active, email, username, user_id)";
@@ -42,15 +42,15 @@ Cypress.Commands.add('deleteAllButArs', () => {
 
 Cypress.Commands.add('createActivities', () => {
   cy.task('queryDatabase', {
-    query: "INSERT INTO" + ACTIVITY_COLUMNS + generateInstitutionTuple("1", "2024-08-06 17:58:21.402146",	"2024-08-06 17:58:21.402146", "Enrollment is open","2024-08-08 17:58:21.402146", "A1", "1","2024-08-07 17:58:21.402146"),
+    query: "INSERT INTO " + ACTIVITY_COLUMNS + generateActivityTuple(1, "2024-08-06 17:58:21.402146",	"2024-08-06 17:58:21.402146", "Enrollment is open","2024-08-08 17:58:21.402146", "A1", 1, "LISBON", "2024-08-07 17:58:21.402146", "APPROVED", 1),
     credentials: credentials,
   })
   cy.task('queryDatabase', {
-    query: "INSERT INTO" + ACTIVITY_COLUMNS + generateInstitutionTuple("2", "2024-08-06 17:58:21.402146",	"2024-08-06 17:58:21.402146",	"Enrollment is open and it is already enrolled", "2024-08-08 17:58:21.402146", "A2", "2", "2024-08-07 17:58:21.402146"),
+    query: "INSERT INTO " + ACTIVITY_COLUMNS + generateActivityTuple(2, "2024-08-06 17:58:21.402146",	"2024-08-06 17:58:21.402146",	"Enrollment is open and it is already enrolled", "2024-08-08 17:58:21.402146", "A2", 2, "LISBON", "2024-08-07 17:58:21.402146", "APPROVED", 1),
     credentials: credentials,
   })
   cy.task('queryDatabase', {
-    query: "INSERT INTO" + ACTIVITY_COLUMNS + generateInstitutionTuple("3", "2024-02-06 17:58:21.402146", "2024-08-06 17:58:21.402146",	"Enrollment is closed", "2024-08-08 17:58:21.402146",	"A3", "3", "2024-08-07 17:58:21.402146"),
+    query: "INSERT INTO " + ACTIVITY_COLUMNS + generateActivityTuple(3, "2024-02-06 17:58:21.402146", "2024-08-06 17:58:21.402146",	"Enrollment is closed", "2024-08-08 17:58:21.402146",	"A3", 3, "LISBON", "2024-08-07 17:58:21.402146", "APPROVED", 1),
     credentials: credentials,
   })
 })
@@ -100,16 +100,17 @@ function generateInstitutionTuple(id) {
     + id + "', 't', 'abca428c09862e89', '2022-08-06 17:58:21.402146','demo_institution@mail.com', 'DEMO INSTITUTION', '000000000', '2024-02-06 17:58:21.402134')";
 }
 
-function generateActivityTuple(id, deadline, create_date, description, ending_date, name, participants_number_limit, starting_date) {
+function generateActivityTuple(id, application_deadline, create_date, description, ending_date, name, participants_number_limit, region, starting_date, state, institution_id) {
   return "VALUES ('"
     + id + "', '" 
-    + deadline + "', '"
+    + application_deadline + "', '"
     + create_date + "', '" 
     + description + "', '" 
     + ending_date + "', '" 
     + name + "', '" 
     + participants_number_limit + "', '"  
-    + "LISBON', '" 
+    + region + "', '"
     + starting_date + "', '" 
-    + "APPROVED', '1')";
+    + state + "', '"
+    + institution_id + "')";
 }
