@@ -6,6 +6,7 @@ const credentials = {
   port: Cypress.env('psql_db_port'),
 };
 
+const ACTIVITY_COLUMNS = "activities (id, deadline, creation_date, description, ending_date, name, participants_number_limit, region, starting_date, state, institution_id)";
 const INSTITUTION_COLUMNS = "institutions (id, active, confirmation_token, creation_date, email, name, nif, token_generation_date)";
 const USER_COLUMNS = "users (user_type, id, creation_date, name, role, state, institution_id)";
 const AUTH_USERS_COLUMNS = "auth_users (auth_type, id, active, email, username, user_id)";
@@ -38,6 +39,21 @@ Cypress.Commands.add('deleteAllButArs', () => {
     credentials: credentials,
   });
 });
+
+Cypress.Commands.add('createActivities', () => {
+  cy.task('queryDatabase', {
+    query: "INSERT INTO" + ACTIVITY_COLUMNS + generateInstitutionTuple("1", "2024-08-06 17:58:21.402146",	"2024-08-06 17:58:21.402146", "Enrollment is open","2024-08-08 17:58:21.402146", "A1", "1","2024-08-07 17:58:21.402146"),
+    credentials: credentials,
+  })
+  cy.task('queryDatabase', {
+    query: "INSERT INTO" + ACTIVITY_COLUMNS + generateInstitutionTuple("2", "2024-08-06 17:58:21.402146",	"2024-08-06 17:58:21.402146",	"Enrollment is open and it is already enrolled", "2024-08-08 17:58:21.402146", "A2", "2", "2024-08-07 17:58:21.402146"),
+    credentials: credentials,
+  })
+  cy.task('queryDatabase', {
+    query: "INSERT INTO" + ACTIVITY_COLUMNS + generateInstitutionTuple("3", "2024-02-06 17:58:21.402146", "2024-08-06 17:58:21.402146",	"Enrollment is closed", "2024-08-08 17:58:21.402146",	"A3", "3", "2024-08-07 17:58:21.402146"),
+    credentials: credentials,
+  })
+})
 
 Cypress.Commands.add('createDemoEntities', () => {
   cy.task('queryDatabase',  {
@@ -82,4 +98,18 @@ function generateUserTuple(id, userType, name, role, institutionId) {
 function generateInstitutionTuple(id) {
   return "VALUES ('"
     + id + "', 't', 'abca428c09862e89', '2022-08-06 17:58:21.402146','demo_institution@mail.com', 'DEMO INSTITUTION', '000000000', '2024-02-06 17:58:21.402134')";
+}
+
+function generateActivityTuple(id, deadline, create_date, description, ending_date, name, participants_number_limit, starting_date) {
+  return "VALUES ('"
+    + id + "', '" 
+    + deadline + "', '"
+    + create_date + "', '" 
+    + description + "', '" 
+    + ending_date + "', '" 
+    + name + "', '" 
+    + participants_number_limit + "', '"  
+    + "LISBON', '" 
+    + starting_date + "', '" 
+    + "APPROVED', '1')";
 }
