@@ -191,7 +191,7 @@ Cypress.Commands.add('prepareEnrollmentTest', () => {
     credentials: credentials,
   })
   // users & auth users
-  cy.task('queryDatabase', {
+  cy.task('queryDatabase',  {
     query: "INSERT INTO " + USER_COLUMNS + generateUserTuple(2, "MEMBER","DEMO-MEMBER", "MEMBER", 1),
     credentials: credentials,
   })
@@ -360,8 +360,8 @@ function generateAssessmentParticipationTuple(id, activityId, volunteerId) {
 
 function generateEnrollmentActivityTuple(id, descripition, name, participants_number_limit) {
   return "VALUES ('"
-      + id + "', '2024-02-06 17:58:21.402146',	'2024-01-06 17:58:21.402146', "
-      + descripition + "', '2024-02-08 17:58:21.402146', '"
+      + id + "', '2024-02-06 17:58:21.402146',	'2024-01-06 17:58:21.402146', '"
+      + description + "', '2024-02-08 17:58:21.402146', '"
       + name +"', '"
       + participants_number_limit + "', 'Lisbon', '2024-02-07 17:58:21.402146', 'APPROVED', '1')";
 }
