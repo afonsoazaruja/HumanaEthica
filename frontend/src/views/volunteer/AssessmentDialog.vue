@@ -12,11 +12,7 @@
             <v-col cols="12" sm="6" md="4">
               <v-text-field
                 label="*Review"
-                :rules="[
-                  (v) =>
-                    isReviewValid(v) ||
-                    'Review is required (minimum 10 characters)',
-                ]"
+                :rules="[(v) => !!v || 'Review is required']"
                 required
                 v-model="assessment.review"
                 data-cy="reviewInput"
@@ -35,6 +31,7 @@
           Close
         </v-btn>
         <v-btn
+          v-if="isReviewValid()"
           color="blue-darken-1"
           variant="text"
           @click="createAssessment"
@@ -62,8 +59,12 @@ export default class AssessmentDialog extends Vue {
 
   cypressCondition: boolean = false;
 
-  isReviewValid(value: any) {
-    return typeof value === 'string' && value.trim().length >= 10;
+  async created() {
+    this.assessment.review = '';
+  }
+
+  isReviewValid() {
+    return this.assessment.review.length >= 10;
   }
 
   get canSave(): boolean {
