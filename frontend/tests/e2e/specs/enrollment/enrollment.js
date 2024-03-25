@@ -34,6 +34,9 @@ describe('Enrollment', () => {
         cy.get('[data-cy="activityEnrollmentsTable"] tbody tr')
             .should('have.length', NUM_ENROLLMENTS)
 
+        // check the first enrollment has the Participating column as false
+        cy.get('[data-cy="activityEnrollmentsTable"] tbody tr')
+            .eq(0).children().eq(2).should('contain', 'false')
     });
 });
 
