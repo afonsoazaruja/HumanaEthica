@@ -158,7 +158,7 @@ public class ActivityDto {
     public void setNumberOfEnrollments(Integer numberOfEnrollments) {
         this.numberOfEnrollments = numberOfEnrollments;
     }
-    
+
     @Override
     public String toString() {
         return "ActivityDto{" +
