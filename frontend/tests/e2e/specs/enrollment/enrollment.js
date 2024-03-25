@@ -1,8 +1,8 @@
-describe('Volunteer', () => {
+describe('Enrollment', () => {
     beforeEach(() => {
         cy.deleteAllButArs();
-        cy.demoMemberLogin();
         cy.prepareEnrollmentTest();
+        cy.demoMemberLogin();
     });
 
     afterEach(() => {
