@@ -192,7 +192,8 @@ export default class VolunteerActivitiesView extends Vue {
     this.assessmentDialog = false;
   }
 
-  async onSaveAssessment() {
+  async onSaveAssessment(assessment: Assessment) {
+    this.volunteerAssessments.unshift(assessment);
     this.currentActivity = null;
     this.assessmentDialog = false;
   }
