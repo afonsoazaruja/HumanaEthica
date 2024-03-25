@@ -38,10 +38,15 @@ describe('Enrollment', () => {
         // check the first enrollment has the Participating column as false
         cy.get('[data-cy="activityEnrollmentsTable"] tbody tr')
             .eq(0).children().eq(2).should('contain', 'false')
+
         // create participant
         cy.get('[data-cy="selectParticipant"]').click();
         cy.get('[data-cy="ratingInput"]').type(RATING);
         cy.get('[data-cy="saveParticipation"]').click();
+
+        // ensure the first enrollment's Participating column is now true
+        cy.get('[data-cy="activityEnrollmentsTable"] tbody tr')
+            .eq(0).children().eq(2).should('contain', 'true')
     });
 });
 
