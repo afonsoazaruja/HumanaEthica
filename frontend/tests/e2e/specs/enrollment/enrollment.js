@@ -12,6 +12,7 @@ describe('Enrollments', () => {
   it('apply to activity', () => {
     const MOTIVATION = "valid motivation";
 
+    cy.intercept('GET', '/activities/*/enrollments').as('getEnrollments');
     cy.intercept('GET', '/users/*/getInstitution').as('getInstitutions');
     cy.intercept('GET', '/activities').as('getActivities');
     
@@ -39,6 +40,10 @@ describe('Enrollments', () => {
     cy.get('[data-cy="memberActivitiesTable"] tbody tr')
       .eq(0).children().eq(3).should('contain', 1);
     cy.get('[data-cy="showEnrollments"]').eq(0).click();
+    cy.wait('@getEnrollments')
+    cy.get('[data-cy="activityEnrollmentsTable"] tbody tr')
+      .should('have.length', 1)
+      .eq(0).children().eq(0).should('contain', MOTIVATION);
     cy.logout();
   });
 });
