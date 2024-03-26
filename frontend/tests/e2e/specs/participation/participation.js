@@ -1,8 +1,8 @@
-describe('Enrollments', () => {
+describe('Participation', () => {
   beforeEach(() => {
     cy.deleteAllButArs();
-    cy.createDemoEntities();
-    cy.createActivities();
+    cy.prepareParticipationTest();
+    cy.demoMemberLogin();
   });
 
   afterEach(() => {
@@ -15,7 +15,7 @@ describe('Enrollments', () => {
     cy.intercept('GET', '/activities/*/enrollments').as('getEnrollments');
     cy.intercept('GET', '/users/*/getInstitution').as('getInstitutions');
     cy.intercept('GET', '/activities').as('getActivities');
-    
+
     cy.demoMemberLogin();
     cy.get('[data-cy="institution"]').click();
     cy.get('[data-cy="activities"]').click();
