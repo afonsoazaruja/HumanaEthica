@@ -73,7 +73,7 @@ Cypress.Commands.add('createDemoEntities', () => {
   })
 });
 
-Cypress.Commands.add('prepareEnrollmentTest', () => {
+Cypress.Commands.add('prepareParticipationTest', () => {
   // institution
   cy.task('queryDatabase', {
     query: "INSERT INTO " + INSTITUTION_COLUMNS + generateInstitutionTuple(1),

@@ -1,7 +1,7 @@
-describe('Enrollment', () => {
+describe('Participation', () => {
     beforeEach(() => {
         cy.deleteAllButArs();
-        cy.prepareEnrollmentTest();
+        cy.prepareParticipationTest();
         cy.demoMemberLogin();
     });
 
