@@ -13,7 +13,7 @@ import AuthPasswordDto from '@/models/user/AuthPasswordDto';
 import Theme from '@/models/theme/Theme';
 import Enrollment from '@/models/enrollment/Enrollment';
 import Assessment from '@/models/assessment/Assessment';
-import Participation from "@/models/participation/Participation";
+import Participation from '@/models/participation/Participation';
 
 const httpClient = axios.create();
 httpClient.defaults.timeout = 100000;
@@ -412,9 +412,12 @@ export default class RemoteServices {
       });
   }
 
-  static async registerParticipation(activityId: number, participation: Participation) {
+  static async registerParticipation(
+    activityId: number,
+    participation: Participation,
+  ) {
     return httpClient
-      .post(`/activities/${activityId}/participations`,participation)
+      .post(`/activities/${activityId}/participations`, participation)
       .then((response) => {
         return new Participation(response.data);
       })
