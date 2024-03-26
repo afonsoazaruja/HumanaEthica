@@ -46,6 +46,7 @@
                 class="mr-2 action-button"
                 color="blue"
                 v-on="on"
+                data-cy="newAssessmentButton"
                 @click="newAssessment(item)"
                 >fa-edit</v-icon
               >

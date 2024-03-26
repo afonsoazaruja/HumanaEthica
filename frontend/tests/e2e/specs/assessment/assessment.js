@@ -9,7 +9,8 @@ describe('Assessment', () => {
   });
 
   it('assess institution', () => {
-    const NAME = 'A1';
+    const NAME = 'A1'
+    const REVIEW = "valid review"
     cy.demoVolunteerLogin();
     // intercept get activities request
     cy.intercept('GET', '/activities').as('getActivities');
@@ -19,10 +20,15 @@ describe('Assessment', () => {
     cy.wait('@getActivities');
     // check results
     cy.get('[data-cy="volunteerActivitiesTable"] tbody tr')
-      .should('have.length', 6)
+      .should('have.length', 6);
     // check if the first activity name is A1
-    cy.get('[data-cy="volunteerActivitiesTable"] tbody tr').eq(0).children().eq(0).should('contain', NAME)
-
-    cy.logout()
+    cy.get('[data-cy="volunteerActivitiesTable"] tbody tr').eq(0).children().eq(0).should('contain', NAME);
+    // assess the first activity
+    cy.get('[data-cy="newAssessmentButton"]').eq(0).click();
+    cy.intercept('POST', '/institutions/*/assessments').as('postAssessment');
+    cy.get('[data-cy="reviewInput"]').type(REVIEW);
+    cy.get('[data-cy="saveAssessment"]').click();
+    cy.wait('@postAssessment');
+    cy.logout();
   });
 });
