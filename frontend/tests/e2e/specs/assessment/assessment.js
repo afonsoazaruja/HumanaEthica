@@ -41,5 +41,9 @@ describe('Assessment', () => {
     // check results - 1 assessment on the table
     cy.get('[data-cy="institutionAssessmentsTable"] tbody tr')
         .should('have.length', 1)
+    // check if assessment has the text inserted by the volunteer
+    cy.get('[data-cy="institutionAssessmentsTable"] tbody tr')
+        .eq(0).children().eq(0).should('contain', REVIEW);
+    cy.logout()
   });
 });
