@@ -11,6 +11,7 @@ describe('Assessment', () => {
   it('assess institution', () => {
     const NAME = 'A1'
     const REVIEW = "valid review"
+
     cy.demoVolunteerLogin();
     // intercept get activities request
     cy.intercept('GET', '/activities').as('getActivities');
@@ -30,5 +31,15 @@ describe('Assessment', () => {
     cy.get('[data-cy="saveAssessment"]').click();
     cy.wait('@postAssessment');
     cy.logout();
+
+    cy.demoMemberLogin();
+    // go to assessments table
+    cy.intercept('GET', '/users/*/getInstitution').as('getInstitutions');
+    cy.get('[data-cy="institution"]').click();
+    cy.get('[data-cy="assessments"]').click();
+    cy.wait('@getInstitutions');
+    // check results - 1 assessment on the table
+    cy.get('[data-cy="institutionAssessmentsTable"] tbody tr')
+        .should('have.length', 1)
   });
 });
