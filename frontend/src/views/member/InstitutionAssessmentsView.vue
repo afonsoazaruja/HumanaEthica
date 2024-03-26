@@ -37,22 +37,22 @@ export default class InstitutionAssessmentsView extends Vue {
 
   headers: object = [
     {
-      text: 'Volunteer Name',
-      value: 'volunteerName',
-      align: 'left',
-      width: '20%',
-    },
-    {
       text: 'Review',
       value: 'review',
       align: 'left',
       width: '30%',
     },
     {
+      text: 'Volunteer',
+      value: 'volunteerName',
+      align: 'left',
+      width: '10%',
+    },
+    {
       text: 'Review Date',
       value: 'reviewDate',
       align: 'left',
-      width: '5%',
+      width: '10%',
     },
   ];
 
