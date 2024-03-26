@@ -9,6 +9,7 @@ describe('Assessment', () => {
   });
 
   it('assess institution', () => {
+    const NAME = 'A1';
     cy.demoVolunteerLogin();
     // intercept get activities request
     cy.intercept('GET', '/activities').as('getActivities');
@@ -19,7 +20,8 @@ describe('Assessment', () => {
     // check results
     cy.get('[data-cy="volunteerActivitiesTable"] tbody tr')
       .should('have.length', 6)
-
+    // check if the first activity name is A1
+    cy.get('[data-cy="volunteerActivitiesTable"] tbody tr').eq(0).children().eq(0).should('contain', NAME)
 
     cy.logout()
   });
