@@ -120,19 +120,19 @@ export default class VolunteerActivitiesView extends Vue {
       text: 'Name',
       value: 'name',
       align: 'left',
-      width: '7%',
+      width: '5%',
     },
     {
       text: 'Region',
       value: 'region',
       align: 'left',
-      width: '7%',
+      width: '5%',
     },
     {
       text: 'Institution',
       value: 'institution.name',
       align: 'left',
-      width: '7%',
+      width: '5%',
     },
     {
       text: 'Participants Limit',
