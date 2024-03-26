@@ -45,19 +45,16 @@
   </v-dialog>
 </template>
 
-
 <script lang="ts">
-import {Vue, Component, Model, Prop} from 'vue-property-decorator';
+import { Vue, Component, Model, Prop } from 'vue-property-decorator';
 import Participation from '@/models/participation/Participation';
 import RemoteServices from '@/services/RemoteServices';
-import Activity from '@/models/activity/Activity';
-import Enrollment from '@/models/enrollment/Enrollment';
 
 @Component({})
 export default class ParticipationSelectionDialog extends Vue {
   @Model('dialog', Boolean) dialog!: boolean;
-  @Prop({ type: Participation, required: true }) readonly participation!: Participation;
-
+  @Prop({ type: Participation, required: true })
+  readonly participation!: Participation;
 
   newParticipation: Participation = new Participation();
 

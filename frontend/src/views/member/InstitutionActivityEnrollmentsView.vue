@@ -153,8 +153,6 @@ export default class InstitutionActivityEnrollmentsView extends Vue {
       (a) => a.id !== this.currentEnrollment?.id,
     );
 
-
-
     if (this.currentEnrollment != null) {
       this.currentEnrollment.participating = true;
       this.enrollments.unshift(this.currentEnrollment);
