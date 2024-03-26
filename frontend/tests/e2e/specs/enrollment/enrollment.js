@@ -30,7 +30,7 @@ describe('Enrollments', () => {
     cy.wait('@getActivities');
     cy.get('[data-cy="applyForActivityButton"]').eq(0).click();
     cy.get('[data-cy="motivationInput"]').type(MOTIVATION);
-    cy.get('[data-cy="saveActivity"]').click();
+    cy.get('[data-cy="applyButton"]').click();
     cy.logout();
 
     cy.demoMemberLogin()

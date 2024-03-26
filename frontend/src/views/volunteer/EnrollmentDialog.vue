@@ -36,7 +36,7 @@
           color="blue-darken-1"
           variant="text"
           @click="createEnrollment"
-          data-cy="saveActivity"
+          data-cy="applyButton"
         >
           Apply
         </v-btn>
