@@ -64,7 +64,7 @@ export default class AssessmentDialog extends Vue {
   }
 
   isReviewValid() {
-    return this.assessment.review.length >= 10;
+    return this.assessment.review.trim().length >= 10;
   }
 
   get canSave(): boolean {
