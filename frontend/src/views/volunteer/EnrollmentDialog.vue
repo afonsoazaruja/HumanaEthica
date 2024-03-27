@@ -12,7 +12,7 @@
                 label="*Motivation"
                 :rules="[
                   (v) =>
-                    isMotivationValid(v) ||
+                    isMotivationValid() ||
                     'Motivation is required (minimum 10 characters)',
                 ]"
                 required
@@ -33,6 +33,7 @@
           Close
         </v-btn>
         <v-btn
+          v-if="isMotivationValid()"
           color="blue-darken-1"
           variant="text"
           @click="createEnrollment"
@@ -60,8 +61,10 @@ export default class EnrollmentDialog extends Vue {
 
   cypressCondition: boolean = false;
 
-  isMotivationValid(value: any) {
-    return typeof value === 'string' && value.trim().length > 10;
+  isMotivationValid() {
+    let value: string = this.enrollment.motivation;
+
+    return typeof value === 'string' && value.trim().length >= 10;
   }
 
   get canApply(): boolean {
