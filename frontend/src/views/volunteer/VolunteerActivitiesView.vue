@@ -53,6 +53,19 @@
             </template>
             <span>Apply for Activity</span>
           </v-tooltip>
+          <v-tooltip bottom> <!-- add conditions to show button here -->
+            <template v-slot:activator="{ on }">
+              <v-icon
+                class="mr-2 action-button"
+                color="blue"
+                v-on="on"
+                data-cy="writeAssessmentButton"
+                @click="writeAssessment(item)"
+                >edit</v-icon
+              >
+            </template>
+            <span>Write Assessment</span>
+          </v-tooltip>
         </template>
       </v-data-table>
       <enrollment-dialog
@@ -201,6 +214,10 @@ export default class VolunteerActivitiesView extends Vue {
         await this.$store.dispatch('error', error);
       }
     }
+  }
+
+  async writeAssessment(activity: Activity) {
+    // implement this
   }
 }
 </script>
