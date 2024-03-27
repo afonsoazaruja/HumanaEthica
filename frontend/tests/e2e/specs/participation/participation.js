@@ -6,44 +6,52 @@ describe('Participation', () => {
   });
 
   afterEach(() => {
+    cy.logout();
     cy.deleteAllButArs();
   });
 
-  it('apply to activity', () => {
-    const MOTIVATION = "valid motivation";
+  it('select participation', () => {
+    const NUM_ACTIVITIES = '2';
+    const NUM_PARTICIPATIONS = '1';
+    const NUM_ENROLLMENTS = '2';
+    const NUM_RATING = '5';
+    const NUM_PARTICIPATIONS_AFTER = '2';
 
-    cy.intercept('GET', '/activities/*/enrollments').as('getEnrollments');
-    cy.intercept('GET', '/users/*/getInstitution').as('getInstitutions');
-    cy.intercept('GET', '/activities').as('getActivities');
-
-    cy.demoMemberLogin();
+    // go to activities table
     cy.get('[data-cy="institution"]').click();
     cy.get('[data-cy="activities"]').click();
-    cy.wait('@getInstitutions');
-    cy.get('[data-cy="memberActivitiesTable"] tbody tr')
-      .should('have.length', 3)
-      .eq(0).children().eq(3).should('contain', 0);
-    cy.logout();
 
-    cy.demoVolunteerLogin();
-    cy.get('[data-cy="volunteerActivities"]').click();
-    cy.wait('@getActivities');
-    cy.get('[data-cy="applyForActivityButton"]').eq(0).click();
-    cy.get('[data-cy="motivationInput"]').type(MOTIVATION);
-    cy.get('[data-cy="applyButton"]').click();
-    cy.logout();
-
-    cy.demoMemberLogin();
-    cy.get('[data-cy="institution"]').click();
-    cy.get('[data-cy="activities"]').click();
-    cy.wait('@getInstitutions');
+    // check results - 2 activities on the table
     cy.get('[data-cy="memberActivitiesTable"] tbody tr')
-      .eq(0).children().eq(3).should('contain', 1);
+        .should('have.length', NUM_ACTIVITIES)
+
+    // check results - first activity has 1 participation
+    cy.get('[data-cy="memberActivitiesTable"] tbody tr')
+      .eq(0).children().eq(4).should('contain', NUM_PARTICIPATIONS)
+
+    // go to show enrollments from first activity
     cy.get('[data-cy="showEnrollments"]').eq(0).click();
-    cy.wait('@getEnrollments')
+
+    // check results - 2 enrollments on the table
     cy.get('[data-cy="activityEnrollmentsTable"] tbody tr')
-      .should('have.length', 1)
-      .eq(0).children().eq(0).should('contain', MOTIVATION);
-    cy.logout();
+        .should('have.length', NUM_ENROLLMENTS)
+
+    // check the first enrollment has the Participating column as false
+    cy.get('[data-cy="activityEnrollmentsTable"] tbody tr')
+      .eq(0).children().eq(2).should('contain', 'false')
+
+    // create participant
+    cy.get('[data-cy="selectParticipant"]').click();
+    cy.get('[data-cy="ratingInput"]').type(NUM_RATING);
+    cy.get('[data-cy="saveParticipation"]').click();
+
+    // check the first enrollment's Participating column is now true
+    cy.get('[data-cy="activityEnrollmentsTable"] tbody tr')
+      .eq(0).children().eq(2).should('contain', 'true')
+
+    // check that the activity has now 2 participations
+    cy.get('[data-cy="getActivities"]').click();
+    cy.get('[data-cy="memberActivitiesTable"] tbody tr')
+      .eq(0).children().eq(4).should('contain', NUM_PARTICIPATIONS_AFTER)
   });
 });

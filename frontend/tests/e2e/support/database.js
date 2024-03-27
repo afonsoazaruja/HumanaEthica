@@ -358,7 +358,7 @@ function generateAssessmentParticipationTuple(id, activityId, volunteerId) {
 
 // Enrollments test
 
-function generateEnrollmentActivityTuple(id, descripition, name, participants_number_limit) {
+function generateEnrollmentActivityTuple(id, description, name, participants_number_limit) {
   return "VALUES ('"
       + id + "', '2024-02-06 17:58:21.402146',	'2024-01-06 17:58:21.402146', '"
       + description + "', '2024-02-08 17:58:21.402146', '"
